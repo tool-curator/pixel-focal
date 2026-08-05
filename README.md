@@ -1,34 +1,39 @@
-# Astro Starter Kit: Basics
+PixelFocal
 
-```sh
-npm create astro@latest -- --template basics
-```
+A modern, privacy-friendly online image Toolkit platform.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+🚀 Features
 
-## 🚀 Project Structure
+- Compress Images
+- Resize Images
+- Crop Images
+- Convert PNG, JPG, WEBP
+- Rotate & Flip
+- Blur Images
+- Fast Processing
+- No Upload Storage
+- Mobile Friendly
 
-Inside of your Astro project, you'll see the following folders and files:
+🌐 Live Website
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+https://pixelfocal.com
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+🛠 Tech Stack
 
-## 🧞 Commands
+- Astro
+- TypeScript
+- Tailwind CSS
+- Cloudflare Pages
+- Cloudflare Workers
+
+📸 Screenshots
+
+<img width="1919" height="904" alt="Screenshot 2026-08-05 234749" src="https://github.com/user-attachments/assets/7c26a6fa-78a1-4dd4-8959-3fcf2059b60f" />
+
+
+
+
+Commands
 
 All commands are run from the root of the project, from a terminal:
 
@@ -41,6 +46,5 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 👀 Want to learn more?
+⭐ If you find PixelFocal useful, consider giving the repository a star. It helps more people discover the project and motivates me to keep improving it.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
