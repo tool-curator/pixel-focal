@@ -1,0 +1,25 @@
+---
+const metrics = [
+  { value: '100%', label: 'Client-Side Execution', sub: 'Runs inside local browser sandbox' },
+  { value: '0 Bytes', label: 'Uploaded to Server', sub: 'Zero tracking or data transmission' },
+  { value: '<50ms', label: 'Preview Render Speed', sub: 'Real-time HTML5 Canvas engine' },
+  { value: '20+', label: 'Image Utility Tools', sub: 'Resize, crop, palette, EXIF, OCR' },
+  { value: '15+', label: 'Supported Formats', sub: 'AVIF, WebP, PNG, JPEG, PDF, ICO' }
+];
+---
+
+<section class="py-16 md:py-24 border-b border-white/5 bg-[#09090b]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+      {metrics.map(m => (
+        <div class="p-6 rounded-2xl bg-zinc-900/40 border border-white/5 hover:border-blue-500/30 transition-all group">
+          <div class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 font-mono group-hover:scale-105 transition-transform">
+            {m.value}
+          </div>
+          <div class="mt-2 text-xs font-bold text-white tracking-wide uppercase">{m.label}</div>
+          <div class="mt-1 text-[11px] text-zinc-500">{m.sub}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

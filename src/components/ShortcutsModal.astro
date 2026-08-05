@@ -1,0 +1,29 @@
+---
+const shortcuts = [
+  { key: 'Cmd / Ctrl + E', label: 'Export Current Image' },
+  { key: 'Cmd / Ctrl + O', label: 'Open File Picker' },
+  { key: 'Cmd / Ctrl + Shift + E', label: 'Export Batch Queue ZIP' },
+  { key: '1 - 9', label: 'Quick Switch Tool Dock' },
+  { key: 'Esc', label: 'Close Modals' },
+];
+---
+
+<div id="shortcutsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="w-full max-w-md p-6 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-2xl space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+      <h3 class="text-base font-bold text-white flex items-center gap-2">
+        <svg class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 010 4m-6 8a2 2 0 100-4m0 4a2 2 0 010-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 010-4m0 4v2m0-6V4"/></svg>
+        Keyboard Shortcuts
+      </h3>
+      <button onclick="document.getElementById('shortcutsModal').classList.add('hidden')" class="text-zinc-500 hover:text-white">✕</button>
+    </div>
+    <div class="space-y-2">
+      {shortcuts.map(s => (
+        <div class="flex items-center justify-between py-2 border-b border-zinc-800/50 text-xs">
+          <span class="text-zinc-300 font-medium">{s.label}</span>
+          <kbd class="px-2 py-1 rounded bg-zinc-950 border border-zinc-800 font-mono text-[11px] text-blue-400">{s.key}</kbd>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>

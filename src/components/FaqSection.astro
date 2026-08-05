@@ -1,0 +1,57 @@
+---
+const faqs = [
+  {
+    q: 'Are my images uploaded to any server?',
+    a: 'No. Pixel Focal processes 100% of images locally inside your browser memory using HTML5 Canvas and WebAssembly. Your images never leave your machine.'
+  },
+  {
+    q: 'Is there any file size limit?',
+    a: 'Because processing takes place locally on your computer hardware, there are no artificial file size caps or daily conversion limits.'
+  },
+  {
+    q: 'Can I use Pixel Focal offline?',
+    a: 'Yes! Pixel Focal supports PWA progressive web app caching. You can install it on your Mac, Windows, or Linux desktop and edit images offline without internet access.'
+  },
+  {
+    q: 'Which image formats are supported?',
+    a: 'Pixel Focal supports PNG, JPEG, WebP, AVIF, GIF, BMP, ICO, SVG, and PDF export.'
+  },
+  {
+    q: 'How does EXIF metadata stripping work?',
+    a: 'When you export images, Pixel Focal re-renders pixel data onto a clean canvas context, effectively stripping camera serial numbers, GPS locations, and private timestamps.'
+  },
+  {
+    q: 'Is Pixel Focal free and open source?',
+    a: 'Yes, Pixel Focal is 100% free and open source under the MIT license.'
+  }
+];
+---
+
+<section id="faq" class="py-20 md:py-28 border-b border-white/5 bg-[#09090b]">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <span class="px-3.5 py-1 text-xs font-semibold tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full uppercase">
+        FREQUENTLY ASKED QUESTIONS
+      </span>
+      <h2 class="mt-4 text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        Everything you need to know.
+      </h2>
+    </div>
+
+    <div class="space-y-4">
+      {faqs.map((faq, idx) => (
+        <details class="group p-6 rounded-2xl bg-zinc-900/60 border border-white/10 [&_summary::-webkit-details-marker]:hidden cursor-pointer transition-all">
+          <summary class="flex items-center justify-between font-bold text-white text-base sm:text-lg">
+            <span>{faq.q}</span>
+            <span class="ml-4 transition-transform group-open:rotate-180 text-blue-400">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </span>
+          </summary>
+          <p class="mt-4 text-sm text-zinc-400 leading-relaxed font-normal">
+            {faq.a}
+          </p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

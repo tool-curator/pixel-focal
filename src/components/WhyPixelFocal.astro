@@ -1,0 +1,60 @@
+---
+const pillars = [
+  {
+    title: 'Absolute Privacy Assurance',
+    desc: 'Traditional online convert tools process your confidential graphics, photos, and documents on third-party cloud servers. Pixel Focal executes 100% locally in your browser memory.',
+    tag: 'PRIVACY'
+  },
+  {
+    title: 'Instant Desktop Speed',
+    desc: 'Without cloud network transfer delays, image operations complete in milliseconds powered by HTML5 Canvas GPU acceleration and WASM routines.',
+    tag: 'VELOCITY'
+  },
+  {
+    title: 'Built for Developers & Designers',
+    desc: 'Generate framework-ready markup for Next.js, Astro, React, and Vue alongside HEX palettes, EXIF cleanup, and responsive picture tags.',
+    tag: 'DEVELOPER EXPERIENCE'
+  },
+  {
+    title: 'Open Source Transparency',
+    desc: 'Pixel Focal is fully open source under MIT license. Inspect the code, audit client security, or self-host your own offline instance.',
+    tag: 'OPEN SOURCE'
+  }
+];
+---
+
+<section id="why" class="py-20 md:py-28 border-b border-white/5 bg-[#09090b]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <div class="lg:col-span-5 space-y-6">
+        <span class="px-3.5 py-1 text-xs font-semibold tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full uppercase">
+          CORE PHILOSOPHY
+        </span>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+          Reinventing web image tools from the ground up.
+        </h2>
+        <p class="text-base text-zinc-400 leading-relaxed">
+          We built Pixel Focal because single-purpose web utilities are bloated with intrusive ads, paid paywalls, file size caps, and server upload privacy risks.
+        </p>
+        <div class="pt-4">
+          <a href="#workspace" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all">
+            Try the Workspace Studio
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {pillars.map(p => (
+          <div class="p-6 rounded-2xl bg-zinc-900/60 border border-white/10 hover:border-blue-500/40 transition-all space-y-3">
+            <span class="text-[10px] font-mono font-bold text-blue-400 tracking-wider uppercase">{p.tag}</span>
+            <h3 class="text-base font-bold text-white">{p.title}</h3>
+            <p class="text-xs text-zinc-400 leading-relaxed">{p.desc}</p>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</section>

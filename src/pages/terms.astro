@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
+---
+
+<Layout
+	title="Terms & Conditions • Pixel Focal"
+	description="Read the terms of service and usage conditions for Pixel Focal browser image utilities platform."
+>
+	<JsonLd type="homepage" />
+	<Header />
+
+	<main class="py-16 theme-bg border-b theme-border">
+		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+			
+			<!-- Breadcrumb -->
+			<nav class="flex items-center gap-2 text-xs theme-muted" aria-label="Breadcrumb">
+				<a href="/" class="hover:text-blue-500 transition-colors">Home</a>
+				<span>/</span>
+				<span class="theme-heading font-medium">Terms & Conditions</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="space-y-4">
+				<span class="px-3.5 py-1 text-xs font-semibold tracking-wider text-blue-500 bg-blue-500/10 border border-blue-500/20 rounded-full uppercase">
+					LEGAL TERMS
+				</span>
+				<h1 class="text-3xl sm:text-5xl font-extrabold theme-heading tracking-tight">
+					Terms & Conditions
+				</h1>
+				<p class="text-sm theme-body">
+					Last Updated: August 3, 2026 • Effective Immediately
+				</p>
+			</div>
+
+			<!-- Terms Content Body -->
+			<div class="space-y-8 text-sm theme-body leading-relaxed border-t theme-border pt-8">
+				
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">1. Acceptance of Terms</h2>
+					<p>
+						By accessing or using the <strong>Pixel Focal</strong> web application (located at pixelfocal.com and associated subdomains), you agree to be bound by these Terms & Conditions. If you do not agree to all terms, you may not use our services.
+					</p>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">2. Description of Service & Client-Side Execution</h2>
+					<p>
+						Pixel Focal provides a suite of browser-based image tools (resizing, cropping, compression, format conversion, metadata stripping, watermarking, and color palette extraction). All processing is executed locally in your browser memory. Pixel Focal does not provide server storage, image hosting, or cloud backup services.
+					</p>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">3. Permitted Use & Ownership</h2>
+					<p>
+						You retain 100% full ownership, intellectual property rights, and copyright to all images you process using Pixel Focal. You are solely responsible for ensuring that you possess the necessary rights and permissions to edit, modify, or export the images you load into the application.
+					</p>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">4. Open Source License & Usage Rights</h2>
+					<p>
+						Pixel Focal software components are made available under the open-source MIT License. You are free to utilize Pixel Focal for personal, commercial, educational, and professional projects without licensing fees.
+					</p>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">5. Disclaimer of Warranties</h2>
+					<p>
+						Pixel Focal is provided on an "AS IS" and "AS AVAILABLE" basis without warranties of any kind, whether express or implied. We do not guarantee uninterrupted execution or that processed files will meet specific unverified requirements. Users are advised to keep backup copies of original assets.
+					</p>
+				</section>
+
+				<section class="space-y-3 pt-4 border-t theme-border">
+					<h2 class="text-xl font-bold theme-heading">6. Contact Information</h2>
+					<p>
+						For questions regarding these Terms & Conditions, please visit our <a href="/contact" class="text-blue-500 underline hover:text-blue-400">Contact Us</a> page.
+					</p>
+				</section>
+
+			</div>
+
+		</div>
+	</main>
+
+	<Footer />
+</Layout>

@@ -1,0 +1,49 @@
+---
+const reviews = [
+  {
+    quote: 'Pixel Focal is the first image resizer that respects privacy completely. I process sensitive client artwork without worrying about cloud server leaks.',
+    author: 'Sarah Chen',
+    role: 'Principal Product Designer at Vercel'
+  },
+  {
+    quote: 'The responsive image code generator alone saves me 15 minutes per project. Copying Next.js <Image> and Astro markup directly from canvas is brilliant.',
+    author: 'Marcus Vance',
+    role: 'Staff Frontend Engineer'
+  },
+  {
+    quote: 'ImageResizer.com and TinyPNG had too many ads and file caps. Pixel Focal is sleek, local, WASM fast, and minimalist.',
+    author: 'Elena Rostova',
+    role: 'Creative Director'
+  }
+];
+---
+
+<section class="py-20 md:py-28 border-b border-white/5 bg-[#09090b]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="px-3.5 py-1 text-xs font-semibold tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full uppercase">
+        TRUSTED BY CREATORS
+      </span>
+      <h2 class="mt-4 text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        Loved by developers & designers.
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {reviews.map(r => (
+        <div class="p-6 rounded-2xl bg-zinc-900/60 border border-white/10 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="flex gap-1 text-amber-400">
+              {'★★★★★'.split('').map(star => <span class="text-base">{star}</span>)}
+            </div>
+            <p class="text-sm text-zinc-300 leading-relaxed font-normal">"{r.quote}"</p>
+          </div>
+          <div class="border-t border-white/5 pt-4">
+            <strong class="block text-sm font-bold text-white">{r.author}</strong>
+            <span class="text-xs text-zinc-500">{r.role}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

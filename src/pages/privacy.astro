@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
+---
+
+<Layout
+	title="Privacy Policy • 100% Client-Side Local Processing | Pixel Focal"
+	description="Read Pixel Focal's privacy policy. Learn how our 100% client-side architecture processes all images locally inside your browser memory with zero server uploads."
+>
+	<JsonLd type="homepage" />
+	<Header />
+
+	<main class="py-16 theme-bg border-b theme-border">
+		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+			
+			<!-- Breadcrumb -->
+			<nav class="flex items-center gap-2 text-xs theme-muted" aria-label="Breadcrumb">
+				<a href="/" class="hover:text-blue-500 transition-colors">Home</a>
+				<span>/</span>
+				<span class="theme-heading font-medium">Privacy Policy</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="space-y-4">
+				<span class="px-3.5 py-1 text-xs font-semibold tracking-wider text-blue-500 bg-blue-500/10 border border-blue-500/20 rounded-full uppercase">
+					PRIVACY BY DESIGN
+				</span>
+				<h1 class="text-3xl sm:text-5xl font-extrabold theme-heading tracking-tight">
+					Privacy Policy
+				</h1>
+				<p class="text-sm theme-body">
+					Last Updated: August 3, 2026 • Effective Immediately
+				</p>
+			</div>
+
+			<!-- Policy Content Body -->
+			<div class="space-y-8 text-sm theme-body leading-relaxed border-t theme-border pt-8">
+				
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">1. Our Core Commitment: Zero Server Uploads</h2>
+					<p>
+						At <strong>Pixel Focal</strong>, privacy is not a secondary configuration option—it is the foundational engineering principle of our platform. Traditional online image tools force users to upload sensitive personal photos, corporate artwork, or confidential documents to remote cloud servers.
+					</p>
+					<p>
+						Pixel Focal operates <strong>100% locally within your Web Browser Sandbox</strong>. Utilizing HTML5 Canvas APIs and WebAssembly (WASM) image processing binaries, all cropping, resizing, compression, format conversion, and metadata stripping take place inside your device memory (RAM). At no point are your image files, metadata, or pixel buffers transmitted across the network or stored on external servers.
+					</p>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">2. Information We Do NOT Collect</h2>
+					<p>Because processing occurs strictly client-side, we explicitly do not collect, log, transmit, or monetize:</p>
+					<ul class="list-disc list-inside space-y-1.5 theme-body">
+						<li>Your uploaded images, graphics, photos, or canvas outputs.</li>
+						<li>Embedded EXIF metadata, camera settings, or GPS geolocation coordinates.</li>
+						<li>Personal identification data (Name, Physical Address, Phone Number).</li>
+						<li>User account credentials or biometric data.</li>
+					</ul>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">3. Local Storage & Client Cookies</h2>
+					<p>
+						Pixel Focal uses browser <code>localStorage</code> solely to preserve your explicit user UI preferences across sessions (such as selecting between <strong>Dark Mode</strong> and <strong>Beige Mode</strong>). No tracking cookies, ad tech pixels, or cross-site fingerprinting beacons are embedded in our application.
+					</p>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">4. Global Privacy Compliance (GDPR, CCPA & COPPA)</h2>
+					<p>
+						Because Pixel Focal does not collect or process personal data, our platform is fully compliant with the European Union General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA), and the Children's Online Privacy Protection Act (COPPA). Users have complete sovereignty over their data at all times.
+					</p>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">5. Updates to This Policy</h2>
+					<p>
+						We may periodically update this Privacy Policy to reflect technical updates or operational enhancements. Any amendments will be published directly to this URL with an updated revision date.
+					</p>
+				</section>
+
+				<section class="space-y-3 pt-4 border-t theme-border">
+					<h2 class="text-xl font-bold theme-heading">6. Contact Our Security Team</h2>
+					<p>
+						If you have questions or security inquiries regarding our privacy architecture, please visit our <a href="/contact" class="text-blue-500 underline hover:text-blue-400">Contact Us</a> page or submit a query.
+					</p>
+				</section>
+
+			</div>
+
+		</div>
+	</main>
+
+	<Footer />
+</Layout>

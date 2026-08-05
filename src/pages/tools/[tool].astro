@@ -1,0 +1,153 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Workspace from '../../components/Workspace.astro';
+import BeforeAfterSlider from '../../components/BeforeAfterSlider.astro';
+import CommandPaletteModal from '../../components/CommandPaletteModal.astro';
+import JsonLd from '../../components/JsonLd.astro';
+import { toolsData, type ToolSeoData } from '../../data/toolsData';
+
+export function getStaticPaths() {
+  return Object.keys(toolsData).map((slug) => ({
+    params: { tool: slug },
+    props: { toolInfo: toolsData[slug] },
+  }));
+}
+
+interface Props {
+  toolInfo: ToolSeoData;
+}
+
+const { toolInfo } = Astro.props;
+const toolUrl = `https://pixelfocal.com/tools/${toolInfo.slug}`;
+---
+
+<Layout title={toolInfo.title} description={toolInfo.metaDescription}>
+  <JsonLd
+    type="tool"
+    toolName={toolInfo.name}
+    toolDescription={toolInfo.metaDescription}
+    toolUrl={toolUrl}
+    faqs={toolInfo.faqs}
+  />
+
+  <Header />
+
+  <main>
+    <!-- Tool Header Hero Section -->
+    <section class="pt-16 pb-12 theme-bg border-b theme-border">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-xs theme-muted mb-6" aria-label="Breadcrumbs">
+          <a href="/" class="hover:text-blue-500 transition-colors">Home</a>
+          <span>/</span>
+          <a href="/#workspace" class="hover:text-blue-500 transition-colors">Tools</a>
+          <span>/</span>
+          <span class="theme-heading font-medium">{toolInfo.name}</span>
+        </nav>
+
+        <div class="max-w-3xl space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-xs font-semibold uppercase tracking-wider">
+            ⚡ 100% CLIENT-SIDE UTILITY
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-extrabold theme-heading tracking-tight">
+            {toolInfo.h1}
+          </h1>
+          <p class="text-base sm:text-lg theme-body leading-relaxed">
+            {toolInfo.intro}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Embedded Studio Workspace -->
+    <Workspace />
+
+    <!-- Interactive Quality Comparison Slider -->
+    <section class="py-12 theme-bg border-t theme-border">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 text-center">
+        <h2 class="text-xl sm:text-3xl font-extrabold theme-heading tracking-tight">
+          Interactive {toolInfo.name} Quality Test
+        </h2>
+        <p class="text-xs sm:text-sm theme-body max-w-xl mx-auto">
+          Drag the comparison handle to test instant client-side canvas transformation output quality.
+        </p>
+        <BeforeAfterSlider />
+      </div>
+    </section>
+
+    <!-- Tool SEO Content Section -->
+    <section class="py-16 theme-bg border-t theme-border">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        
+        <!-- Feature & Benefit Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="p-6 rounded-2xl theme-card border theme-border space-y-4">
+            <h2 class="text-xl font-bold theme-heading">Key Features</h2>
+            <ul class="space-y-2.5 text-xs theme-body">
+              {toolInfo.features.map(f => (
+                <li class="flex items-start gap-2">
+                  <span class="text-blue-500 font-bold">✓</span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="p-6 rounded-2xl theme-card border theme-border space-y-4">
+            <h2 class="text-xl font-bold theme-heading">Why Use {toolInfo.name}?</h2>
+            <ul class="space-y-2.5 text-xs theme-body">
+              {toolInfo.benefits.map(b => (
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-500 font-bold">⚡</span>
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Tool Specific FAQ Accordion -->
+        <div class="space-y-6 pt-4">
+          <h2 class="text-2xl font-bold theme-heading text-center">
+            {toolInfo.name} Frequently Asked Questions
+          </h2>
+          <div class="space-y-3">
+            {toolInfo.faqs.map(faq => (
+              <details class="group p-5 rounded-xl theme-card border theme-border cursor-pointer">
+                <summary class="flex items-center justify-between font-bold theme-heading text-sm">
+                  <span>{faq.q}</span>
+                  <span class="ml-4 text-blue-500 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <p class="mt-3 text-xs theme-body leading-relaxed font-normal">
+                  {faq.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <!-- Related Tools Navigation -->
+        <div class="pt-8 border-t theme-border text-center space-y-4">
+          <h3 class="text-sm font-bold theme-heading">Related Image Utilities</h3>
+          <div class="flex flex-wrap justify-center gap-2 text-xs">
+            {Object.keys(toolsData).filter(slug => slug !== toolInfo.slug).slice(0, 8).map(slug => (
+              <a href={`/tools/${slug}`} class="px-3 py-1.5 rounded-lg theme-card hover:border-blue-500 hover:text-blue-500 transition-all">
+                {toolsData[slug].name}
+              </a>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <CommandPaletteModal />
+
+  <script src="../../scripts/editor.ts"></script>
+</Layout>

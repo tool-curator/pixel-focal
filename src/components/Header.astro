@@ -1,0 +1,283 @@
+---
+const toolCategories = [
+  {
+    category: 'Core Editing',
+    items: [
+      { name: 'Image Resizer', slug: 'image-resizer', toolId: 'resize', desc: 'Scale dimensions & presets' },
+      { name: 'Image Cropper', slug: 'image-cropper', toolId: 'crop', desc: 'Freeform drag & aspect ratios' },
+      { name: 'Image Compressor', slug: 'image-compressor', toolId: 'compress', desc: 'Lossy & lossless shrink' },
+      { name: 'Image Converter', slug: 'image-converter', toolId: 'convert', desc: 'HEIC to JPG, WebP, PNG, PDF' },
+      { name: 'Image Optimizer', slug: 'image-optimizer', toolId: 'compress', desc: 'Web Vitals Lighthouse boost' },
+    ]
+  },
+  {
+    category: 'Transform & Brand',
+    items: [
+      { name: 'Image Rotator', slug: 'image-rotator', toolId: 'rotate', desc: '90° / 180° canvas orientation' },
+      { name: 'Image Flipper', slug: 'image-flipper', toolId: 'rotate', desc: 'Horizontal & vertical mirror' },
+      { name: 'Watermark Tool', slug: 'watermark-tool', toolId: 'watermark', desc: 'Text & logo protection' },
+      { name: 'Borders & Canvas', slug: 'image-inspector', toolId: 'borders', desc: 'Outer padding & color fill' },
+    ]
+  },
+  {
+    category: 'Utilities & Code',
+    items: [
+      { name: 'EXIF Metadata Remover', slug: 'metadata-remover', toolId: 'metadata', desc: 'Strip GPS & camera tags' },
+      { name: 'Color Palette Extractor', slug: 'color-palette-extractor', toolId: 'palette', desc: 'HEX code color swatches' },
+      { name: 'OCR Text Extractor', slug: 'ocr-text-extractor', toolId: 'ocr', desc: 'Canvas OCR text scanner' },
+      { name: 'Developer Code Generator', slug: 'responsive-image-generator', toolId: 'responsive', desc: 'HTML picture, Next.js, Astro' },
+      { name: 'Batch Queue Editor', slug: 'batch-image-editor', toolId: 'batch', desc: 'Multi-image ZIP archive' },
+    ]
+  }
+];
+---
+
+<header class="sticky top-0 z-50 w-full border-b theme-border backdrop-blur-xl theme-card transition-all duration-300 shadow-xl shadow-blue-500/5">
+  <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 h-18 sm:h-20 flex items-center justify-between">
+    
+    <!-- Stylish Brand Logo Mark -->
+    <a href="/" class="flex items-center gap-3 sm:gap-3.5 group select-none py-2">
+      <div class="relative w-10 h-10 sm:w-12 sm:h-12 rounded-2xl p-0.5 shadow-xl shadow-blue-500/20 group-hover:shadow-blue-500/40 group-hover:scale-105 transition-all duration-300 shrink-0">
+        <div class="relative w-full h-full rounded-xl flex items-center justify-center p-1 overflow-hidden bg-gradient-to-tr from-slate-950 via-slate-900 to-blue-950 border border-blue-500/30">
+          
+          <!-- Metallic Gradient SVG Badge -->
+          <svg class="w-full h-full text-white" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="headerMetallicGradientLarge" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0b0d14" />
+                <stop offset="40%" stop-color="#1e2230" />
+                <stop offset="100%" stop-color="#3b82f6" />
+              </linearGradient>
+            </defs>
+
+            <circle cx="32" cy="32" r="30" fill="url(#headerMetallicGradientLarge)" />
+            <circle cx="32" cy="32" r="29.5" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1.2" />
+
+            <g class="group-hover:rotate-45 origin-center transition-transform duration-500 ease-out">
+              <rect x="17" y="17" width="30" height="30" rx="7" transform="rotate(22.5 32 32)" fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" />
+              <circle cx="32" cy="32" r="5" fill="#ffffff" class="group-hover:fill-blue-400 transition-colors" />
+            </g>
+          </svg>
+          
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <span class="text-lg sm:text-2xl font-extrabold tracking-tight theme-heading leading-none group-hover:text-blue-500 transition-colors">
+          Pixel Focal
+        </span>
+        <span class="text-[9px] sm:text-[10px] font-mono font-bold text-blue-500 tracking-widest uppercase mt-0.5 flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+          Browser Suite
+        </span>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation Links with Stylish Pill Hover States -->
+    <nav class="hidden lg:flex items-center gap-1.5 text-xs font-semibold theme-heading relative">
+      <a href="/#workspace" class="px-4 py-2 rounded-xl hover:text-blue-500 hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all">Workspace</a>
+      
+      <!-- Tools Interactive Dropdown Trigger Container -->
+      <div class="relative group" id="toolsDropdownContainer">
+        <button id="toolsDropdownBtn" class="px-4 py-2 rounded-xl hover:text-blue-500 hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all flex items-center gap-1.5 select-none">
+          <span>Tools</span>
+          <span class="px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-500 text-[10px] font-mono border border-blue-500/20">14 Tools</span>
+          <svg id="toolsDropdownArrow" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <div class="absolute left-0 top-full h-3 w-full"></div>
+
+        <!-- Dropdown Mega Menu Panel -->
+        <div id="toolsDropdownMenu" class="absolute left-1/2 -translate-x-1/2 top-[calc(100%+8px)] w-[720px] p-6 rounded-2xl theme-card border theme-border shadow-2xl backdrop-blur-2xl transition-all duration-200 z-50 opacity-0 pointer-events-none transform -translate-y-2 group-hover:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0">
+          <div class="grid grid-cols-3 gap-6">
+            {toolCategories.map(cat => (
+              <div class="space-y-3">
+                <span class="text-[11px] font-mono font-bold text-blue-500 uppercase tracking-wider block border-b theme-border pb-1.5">
+                  {cat.category}
+                </span>
+                <div class="space-y-1">
+                  {cat.items.map(item => (
+                    <a
+                      href="/#workspace"
+                      data-tool-id={item.toolId}
+                      class="header-dropdown-tool-link group/item block p-2 rounded-xl hover:bg-blue-600/10 transition-all"
+                    >
+                      <div class="text-xs font-bold theme-heading group-hover/item:text-blue-500 transition-colors">
+                        {item.name}
+                      </div>
+                      <div class="text-[10px] theme-muted truncate">
+                        {item.desc}
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="mt-5 pt-3.5 border-t theme-border flex items-center justify-between text-xs theme-muted">
+            <span>⚡ 100% Client-Side Local RAM Engine • HEIC to JPG Default</span>
+            <a href="/tools/image-resizer" class="text-blue-500 font-semibold hover:underline flex items-center gap-1">
+              Browse Tools Directory →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <a href="/about" class="px-4 py-2 rounded-xl hover:text-blue-500 hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all">About</a>
+      <a href="/privacy" class="px-4 py-2 rounded-xl hover:text-blue-500 hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all">Privacy</a>
+      <a href="/terms" class="px-4 py-2 rounded-xl hover:text-blue-500 hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all">Terms</a>
+      <a href="/contact" class="px-4 py-2 rounded-xl hover:text-blue-500 hover:bg-blue-600/10 border border-transparent hover:border-blue-500/20 transition-all">Contact</a>
+    </nav>
+
+    <!-- Actions & Controls -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Dark / Beige Theme Toggle Button -->
+      <button id="themeToggleBtn" aria-label="Toggle Dark/Beige theme" class="px-3 py-2 theme-card hover:border-blue-500/50 rounded-xl border theme-border active:scale-95 transition-all flex items-center gap-2 shadow-xs">
+        <span id="themeDotIndicator" class="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
+        <span id="themeLabelText" class="text-xs font-bold uppercase tracking-wider theme-heading">Beige</span>
+      </button>
+
+      <!-- Stylish Primary Action CTA -->
+      <a href="/#workspace" class="hidden sm:flex px-5 py-2.5 text-xs font-extrabold text-white bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-xl shadow-lg shadow-blue-500/25 border border-blue-400/30 hover:scale-[1.02] active:scale-95 transition-all items-center gap-2">
+        Start Editing
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
+
+      <!-- Prominent Wide Mobile Menu Button -->
+      <button id="mobileMenuBtn" aria-label="Open mobile navigation menu" class="lg:hidden px-3.5 py-1.5 sm:px-4 rounded-xl theme-card border theme-border hover:border-blue-500/50 hover:bg-blue-600/10 active:scale-95 transition-all flex items-center gap-2 select-none cursor-pointer">
+        <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <span class="text-xs font-bold theme-heading tracking-wide uppercase">Menu</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Menu (Responsive Phones & Tablets) -->
+  <div id="mobileMenuDrawer" class="hidden lg:hidden border-t theme-border theme-bg p-4 space-y-4 shadow-2xl">
+    <div class="grid grid-cols-2 gap-2 text-xs font-medium">
+      <a href="/#workspace" class="p-3 rounded-xl theme-card border theme-border flex items-center justify-between">
+        <span class="theme-heading font-bold">Workspace Studio</span>
+        <span class="text-blue-500">→</span>
+      </a>
+      <a href="/about" class="p-3 rounded-xl theme-card border theme-border flex items-center justify-between">
+        <span class="theme-heading font-bold">About Us</span>
+        <span class="text-blue-500">→</span>
+      </a>
+      <a href="/privacy" class="p-3 rounded-xl theme-card border theme-border flex items-center justify-between">
+        <span class="theme-heading font-bold">Privacy Policy</span>
+        <span class="text-blue-500">→</span>
+      </a>
+      <a href="/terms" class="p-3 rounded-xl theme-card border theme-border flex items-center justify-between">
+        <span class="theme-heading font-bold">Terms & Conditions</span>
+        <span class="text-blue-500">→</span>
+      </a>
+      <a href="/contact" class="p-3 rounded-xl theme-card border theme-border flex items-center justify-between col-span-2">
+        <span class="theme-heading font-bold">Contact Support</span>
+        <span class="text-blue-500">→</span>
+      </a>
+    </div>
+
+    <!-- Mobile Tools Quick Grid -->
+    <div class="pt-2 border-t theme-border space-y-2">
+      <span class="text-[10px] font-mono font-bold text-blue-500 uppercase tracking-wider block">Quick Image Tools</span>
+      <div class="grid grid-cols-2 gap-2 text-[11px]">
+        <a href="/#workspace" data-tool-id="resize" class="mobile-tool-quick-link p-2 rounded-lg theme-input border theme-border theme-heading truncate">📐 Image Resizer</a>
+        <a href="/#workspace" data-tool-id="crop" class="mobile-tool-quick-link p-2 rounded-lg theme-input border theme-border theme-heading truncate">✂️ Image Cropper</a>
+        <a href="/#workspace" data-tool-id="compress" class="mobile-tool-quick-link p-2 rounded-lg theme-input border theme-border theme-heading truncate">🗜️ Image Compressor</a>
+        <a href="/#workspace" data-tool-id="convert" class="mobile-tool-quick-link p-2 rounded-lg theme-input border theme-border theme-heading truncate">🔄 Format Converter</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  #toolsDropdownMenu.is-open {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+</style>
+
+<script is:inline>
+  function updateThemeUI() {
+    const isBeige = document.documentElement.classList.contains('light') || document.documentElement.classList.contains('beige');
+    const label = document.getElementById('themeLabelText');
+    const dot = document.getElementById('themeDotIndicator');
+
+    if (label) label.textContent = isBeige ? 'Beige' : 'Dark';
+    if (dot) {
+      if (isBeige) {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-600 shadow-sm';
+      } else {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm';
+      }
+    }
+  }
+
+  // Mobile menu toggle
+  const mobileBtn = document.getElementById('mobileMenuBtn');
+  const mobileDrawer = document.getElementById('mobileMenuDrawer');
+
+  mobileBtn?.addEventListener('click', () => {
+    mobileDrawer?.classList.toggle('hidden');
+    mobileBtn.classList.toggle('border-blue-500');
+  });
+
+  document.querySelectorAll('.mobile-tool-quick-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      mobileDrawer?.classList.add('hidden');
+      const toolId = link.getAttribute('data-tool-id');
+      if (toolId && window.pixelEditor) {
+        window.pixelEditor.setTool(toolId);
+      }
+    });
+  });
+
+  const dropdownBtn = document.getElementById('toolsDropdownBtn');
+  const dropdownMenu = document.getElementById('toolsDropdownMenu');
+  const container = document.getElementById('toolsDropdownContainer');
+
+  dropdownBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdownMenu?.classList.toggle('is-open');
+  });
+
+  window.addEventListener('click', (e) => {
+    if (!container?.contains(e.target)) {
+      dropdownMenu?.classList.remove('is-open');
+    }
+  });
+
+  document.querySelectorAll('.header-dropdown-tool-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      dropdownMenu?.classList.remove('is-open');
+      const toolId = link.getAttribute('data-tool-id');
+      if (window.location.pathname !== '/' && window.location.pathname !== '') {
+        return;
+      }
+      if (toolId && window.pixelEditor) {
+        window.pixelEditor.setTool(toolId);
+      }
+    });
+  });
+
+  document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+    const isBeigeActive = document.documentElement.classList.contains('light') || document.documentElement.classList.contains('beige');
+    if (isBeigeActive) {
+      document.documentElement.classList.remove('light', 'beige');
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('beige', 'light');
+      localStorage.setItem('theme', 'beige');
+    }
+    updateThemeUI();
+  });
+
+  updateThemeUI();
+</script>

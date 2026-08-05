@@ -1,0 +1,97 @@
+---
+interface Props {
+  beforeImg?: string;
+  afterImg?: string;
+  beforeLabel?: string;
+  afterLabel?: string;
+}
+
+const {
+  beforeImg = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&auto=format&fit=crop&q=80",
+  afterImg = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&auto=format&fit=crop&q=40",
+  beforeLabel = "Original Raw (2.4 MB)",
+  afterLabel = "WebP Compressed (380 KB • -84%)"
+} = Astro.props;
+---
+
+<div class="relative w-full max-w-4xl mx-auto rounded-2xl theme-card border theme-border shadow-2xl overflow-hidden select-none group">
+  <!-- Container Stage -->
+  <div class="relative h-[320px] sm:h-[450px] w-full overflow-hidden bg-black/40 cursor-ew-resize touch-none" id="beforeAfterSliderContainer">
+    
+    <!-- After / Compressed Image (Background Base) -->
+    <img src={afterImg} alt={afterLabel} class="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+    <span class="absolute bottom-4 right-4 z-10 px-3 py-1.5 rounded-lg bg-emerald-600/90 text-white font-bold text-xs shadow-xl backdrop-blur-md pointer-events-none">
+      ⚡ {afterLabel}
+    </span>
+
+    <!-- Before / Original Image (Clipped Overlay via CSS clip-path) -->
+    <div id="sliderBeforeClip" class="absolute inset-0 w-full h-full pointer-events-none" style="clip-path: inset(0 50% 0 0);">
+      <img src={beforeImg} alt={beforeLabel} class="w-full h-full object-cover pointer-events-none" />
+      <span class="absolute bottom-4 left-4 z-10 px-3 py-1.5 rounded-lg bg-blue-600/90 text-white font-bold text-xs shadow-xl backdrop-blur-md pointer-events-none">
+        📷 {beforeLabel}
+      </span>
+    </div>
+
+    <!-- Drag Handle Line & Button -->
+    <div id="sliderHandleBtn" class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center cursor-ew-resize pointer-events-none">
+      <div class="w-0.5 h-full bg-white shadow-2xl shadow-blue-500"></div>
+      <div class="absolute w-10 h-10 rounded-full bg-blue-600 text-white border-2 border-white shadow-2xl flex items-center justify-center transform group-hover:scale-110 transition-transform">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8M8 12h8M8 17h8" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function() {
+    function initSlider() {
+      const container = document.getElementById('beforeAfterSliderContainer');
+      const clipDiv = document.getElementById('sliderBeforeClip');
+      const handleBtn = document.getElementById('sliderHandleBtn');
+
+      if (!container) return;
+
+      let isDragging = false;
+
+      function updateSlider(clientX) {
+        const rect = container.getBoundingClientRect();
+        const x = clientX - rect.left;
+        let percent = (x / rect.width) * 100;
+        if (percent < 0) percent = 0;
+        if (percent > 100) percent = 100;
+
+        if (clipDiv) clipDiv.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+        if (handleBtn) handleBtn.style.left = `${percent}%`;
+      }
+
+      container.addEventListener('pointerdown', function(e) {
+        isDragging = true;
+        try { container.setPointerCapture(e.pointerId); } catch(err) {}
+        updateSlider(e.clientX);
+      });
+
+      container.addEventListener('pointermove', function(e) {
+        if (isDragging) {
+          updateSlider(e.clientX);
+        }
+      });
+
+      container.addEventListener('pointerup', function(e) {
+        isDragging = false;
+        try { container.releasePointerCapture(e.pointerId); } catch(err) {}
+      });
+
+      container.addEventListener('pointercancel', function(e) {
+        isDragging = false;
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSlider);
+    } else {
+      initSlider();
+    }
+  })();
+</script>

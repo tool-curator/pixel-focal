@@ -1,0 +1,100 @@
+---
+interface Props {
+  type?: 'homepage' | 'tool';
+  toolName?: string;
+  toolDescription?: string;
+  toolUrl?: string;
+  faqs?: { q: string; a: string }[];
+}
+
+const {
+  type = 'homepage',
+  toolName = 'Pixel Focal Browser Image Editor',
+  toolDescription = '100% client-side privacy-first browser image utilities platform for resizing, cropping, compressing, converting, and editing images.',
+  toolUrl = 'https://pixelfocal.com',
+  faqs = []
+} = Astro.props;
+
+const siteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Pixel Focal',
+  url: 'https://pixelfocal.com',
+  description: '100% client-side browser image utilities and image editing platform.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://pixelfocal.com/?q={search_term_string}',
+    'query-input': 'required name=search_term_string'
+  }
+};
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Pixel Focal',
+  url: 'https://pixelfocal.com',
+  logo: 'https://pixelfocal.com/favicon.svg',
+  sameAs: [
+    'https://github.com'
+  ]
+};
+
+const softwareAppSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: toolName,
+  operatingSystem: 'Any (Web Browser)',
+  applicationCategory: 'MultimediaApplication',
+  offers: {
+    '@type': 'Offer',
+    price: '0.00',
+    priceCurrency: 'USD'
+  },
+  description: toolDescription,
+  browserRequirements: 'Requires JavaScript and HTML5 Canvas API support.'
+};
+
+const faqSchema = faqs.length > 0 ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: f.a
+    }
+  }))
+} : null;
+
+const breadcrumbSchema = type === 'tool' ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://pixelfocal.com'
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Tools',
+      item: 'https://pixelfocal.com/#workspace'
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: toolName,
+      item: toolUrl
+    }
+  ]
+} : null;
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(siteSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(softwareAppSchema)} />
+{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+{breadcrumbSchema && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}

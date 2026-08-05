@@ -1,0 +1,66 @@
+---
+const steps = [
+  {
+    step: '01',
+    title: 'Upload or Paste Image',
+    desc: 'Drag & drop image files, select from disk, or paste directly from your system clipboard.',
+    icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12'
+  },
+  {
+    step: '02',
+    title: 'Select Utility & Adjust',
+    desc: 'Resize, crop around focal points, compress quality, convert formats, or extract color palettes.',
+    icon: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 010 4m-6 8a2 2 0 100-4m0 4a2 2 0 010-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 010-4m0 4v2m0-6V4'
+  },
+  {
+    step: '03',
+    title: 'Real-Time Preview',
+    desc: 'Inspect changes immediately with our interactive before/after split slider and live file size counter.',
+    icon: 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
+  },
+  {
+    step: '04',
+    title: 'Instant Browser Export',
+    desc: 'Download clean image files, copy responsive developer code snippets, or export full ZIP archives.',
+    icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4'
+  }
+];
+---
+
+<section id="workflow" class="py-20 md:py-28 border-b border-white/5 bg-[#09090b]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="px-3.5 py-1 text-xs font-semibold tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full uppercase">
+        STREAMLINED PROCESS
+      </span>
+      <h2 class="mt-4 text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        How Pixel Focal works.
+      </h2>
+      <p class="mt-4 text-base sm:text-lg text-zinc-400">
+        Four simple steps to transform, optimize, and export your image assets.
+      </p>
+    </div>
+
+    <!-- Timeline Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+      {steps.map((s, idx) => (
+        <div class="relative p-6 rounded-2xl bg-zinc-900/60 border border-white/10 flex flex-col justify-between hover:border-blue-500/50 transition-all group">
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <span class="text-3xl font-black font-mono text-zinc-700 group-hover:text-blue-400 transition-colors">
+                {s.step}
+              </span>
+              <div class="p-3 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d={s.icon} />
+                </svg>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">{s.title}</h3>
+            <p class="text-xs text-zinc-400 leading-relaxed">{s.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

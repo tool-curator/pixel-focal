@@ -1,0 +1,716 @@
+---
+import ToolDock from './ToolDock.astro';
+
+const socialPresets = [
+  { label: 'Instagram Square (1080x1080)', value: '1080x1080' },
+  { label: 'Instagram Portrait (1080x1350)', value: '1080x1350' },
+  { label: 'Instagram Story (1080x1920)', value: '1080x1920' },
+  { label: 'YouTube Thumbnail (1280x720)', value: '1280x720' },
+  { label: 'YouTube Banner (2560x1440)', value: '2560x1440' },
+  { label: 'LinkedIn Post (1200x628)', value: '1200x628' },
+  { label: 'X / Twitter Post (1600x900)', value: '1600x900' },
+  { label: 'X / Twitter Header (1500x500)', value: '1500x500' },
+  { label: 'TikTok Video Cover (1080x1920)', value: '1080x1920' },
+  { label: 'Pinterest Pin (1000x1500)', value: '1000x1500' },
+  { label: 'Discord Banner (600x240)', value: '600x240' },
+];
+---
+
+<section id="workspace" class="relative max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-10 py-16 md:py-24">
+  <!-- Global Full-Screen Drag & Drop Overlay -->
+  <div id="globalDragOverlay" class="hidden fixed inset-0 z-[100] bg-blue-900/80 backdrop-blur-md border-4 border-dashed border-white flex flex-col items-center justify-center text-white pointer-events-none transition-all">
+    <div class="p-6 rounded-full bg-white/10 border border-white/20 mb-4 animate-bounce">
+      <svg class="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+    </div>
+    <h2 class="text-3xl font-extrabold tracking-tight">Drop files anywhere to open & edit</h2>
+    <p class="text-sm opacity-80 mt-2">Supports PNG, JPEG, WebP, AVIF, HEIC/HEIF up to 50MB</p>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-blue-600 text-white font-medium text-xs shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 flex items-center gap-2">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <span>Action complete</span>
+  </div>
+
+  <!-- Quick Onboarding Tips Banner -->
+  <div id="onboardingTipsBanner" class="mb-6 p-4 rounded-2xl theme-card border border-blue-500/30 bg-blue-500/5 hidden lg:flex flex-wrap items-center justify-between gap-4 text-xs">
+    <div class="flex items-center gap-3">
+      <span class="p-2 rounded-xl bg-blue-600/10 text-blue-500 font-bold">💡 Quick Tip</span>
+      <p class="theme-heading font-medium">
+        Drop images anywhere on the page • Press <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-blue-400 font-mono">Ctrl+Z</kbd> to Undo, <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-blue-400 font-mono">Ctrl+Y</kbd> to Redo, <kbd class="px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-blue-400 font-mono">Ctrl+S</kbd> to Export.
+      </p>
+    </div>
+    <button onclick="document.getElementById('onboardingTipsBanner')?.remove()" class="px-2.5 py-1 rounded-lg theme-input theme-muted hover:theme-heading text-[11px] font-semibold transition-colors">
+      Got it ✕
+    </button>
+  </div>
+
+  <!-- Workspace Header / Status -->
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b theme-border">
+    <div class="flex items-center gap-3">
+      <div class="p-2.5 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-500">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-extrabold theme-heading tracking-tight flex items-center gap-2">
+          Image Studio Workspace
+          <span class="px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-500 text-[11px] font-mono border border-blue-500/20 uppercase font-semibold">Local RAM Engine</span>
+        </h2>
+        <p class="text-xs theme-muted">Select tools on the dock below to apply instant canvas transforms.</p>
+      </div>
+    </div>
+
+    <!-- Top Action Buttons Bar -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Undo / Redo Buttons -->
+      <div class="flex items-center gap-1 p-1 rounded-xl theme-card border theme-border">
+        <button id="undoBtn" disabled title="Undo (Ctrl+Z)" class="p-1.5 rounded-lg theme-heading hover:bg-blue-600/10 disabled:opacity-40 disabled:pointer-events-none transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+        </button>
+        <button id="redoBtn" disabled title="Redo (Ctrl+Y)" class="p-1.5 rounded-lg theme-heading hover:bg-blue-600/10 disabled:opacity-40 disabled:pointer-events-none transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- View Mode Buttons -->
+      <div class="flex items-center gap-1 p-1 rounded-xl theme-card border theme-border">
+        <button onclick="window.pixelEditor?.toggleViewMode('single')" title="Single View" class="px-2.5 py-1 text-xs font-semibold theme-heading hover:bg-blue-600/10 rounded-lg transition-all">Single</button>
+        <button onclick="window.pixelEditor?.toggleViewMode('side-by-side')" title="Side-by-Side View" class="px-2.5 py-1 text-xs font-semibold theme-heading hover:bg-blue-600/10 rounded-lg transition-all">Side-by-Side</button>
+        <button onclick="window.pixelEditor?.toggleViewMode('slider')" title="Interactive Split Slider" class="px-2.5 py-1 text-xs font-semibold text-blue-500 hover:bg-blue-600/10 rounded-lg transition-all">Slider</button>
+      </div>
+
+      <!-- History & Recent Files Modal Triggers -->
+      <button onclick="document.getElementById('historyModal')?.classList.remove('hidden')" class="px-3 py-2 text-xs font-semibold theme-card border theme-border rounded-xl active:scale-95 transition-all flex items-center gap-1.5 hover:border-blue-500/40">
+        <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        History
+      </button>
+
+      <button onclick="document.getElementById('recentFilesModal')?.classList.remove('hidden')" class="px-3 py-2 text-xs font-semibold theme-card border theme-border rounded-xl active:scale-95 transition-all flex items-center gap-1.5 hover:border-purple-500/40">
+        <svg class="w-4 h-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+        Recent
+      </button>
+
+      <button onclick="document.getElementById('advancedExportModal')?.classList.remove('hidden')" class="px-3.5 py-2 text-xs font-semibold theme-card border theme-border rounded-xl active:scale-95 transition-all flex items-center gap-1.5 hover:border-emerald-500/40">
+        <svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+        Export Options
+      </button>
+
+      <label id="editorDropZone" for="imageUploadInput" class="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-blue-500/25 border border-blue-400/30 rounded-xl cursor-pointer hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+        Upload Image
+        <input type="file" id="imageUploadInput" multiple accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.HEIC,.HEIF,.bmp,.gif" class="hidden" />
+      </label>
+
+      <button id="exportPrimaryBtn" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-lg active:scale-95 transition-all flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Quick Export
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Editor (60% Workspace / 40% Feature Space Side-by-Side) -->
+  <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start pb-32 sm:pb-28 lg:pb-24">
+
+    <!-- LEFT COLUMN: Workspace / Upload Stage (60% Width) -->
+    <div class="w-full lg:w-[60%] space-y-4">
+      
+      <!-- Empty State Upload Dropzone Stage (Upload Space) -->
+      <div id="emptyStateDropzone" class="relative min-h-[320px] sm:min-h-[440px] lg:min-h-[540px] rounded-2xl theme-card border-2 border-dashed border-blue-500/40 hover:border-blue-500 flex flex-col items-center justify-center p-5 sm:p-8 text-center transition-all cursor-pointer group shadow-lg">
+        <div class="p-4 sm:p-6 rounded-2xl bg-blue-600/10 text-blue-500 border border-blue-500/20 group-hover:scale-110 transition-transform mb-4 sm:mb-6">
+          <svg class="w-10 h-10 sm:w-14 sm:h-14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+        </div>
+
+        <h3 class="text-xl sm:text-2xl font-extrabold theme-heading tracking-tight mb-2">
+          Drop your image here or browse
+        </h3>
+        <p class="text-xs sm:text-sm theme-body max-w-md mb-6 sm:mb-8 leading-relaxed">
+          100% Client-Side Processing • Your images are processed locally in RAM and never uploaded to any cloud server.
+        </p>
+
+        <label for="emptyStateUploadInput" class="px-6 py-3 sm:px-9 sm:py-4 rounded-xl text-sm sm:text-base font-extrabold text-white bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-xl shadow-blue-500/30 border border-blue-400/30 ring-4 ring-blue-500/15 hover:scale-[1.03] active:scale-95 transition-all cursor-pointer flex items-center gap-2.5 sm:gap-3">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Upload Image (Max 50MB)
+          <input type="file" id="emptyStateUploadInput" multiple accept="image/*,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif,.HEIC,.HEIF,.bmp,.gif" class="hidden" />
+        </label>
+
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-2 text-xs theme-muted font-medium">
+          <span class="px-3 py-1.5 rounded-lg theme-input border theme-border font-mono">PNG</span>
+          <span class="px-3 py-1.5 rounded-lg theme-input border theme-border font-mono">JPEG</span>
+          <span class="px-3 py-1.5 rounded-lg theme-input border theme-border font-mono">WEBP</span>
+          <span class="px-3 py-1.5 rounded-lg theme-input border theme-border font-mono">AVIF</span>
+          <span class="px-3 py-1.5 rounded-lg theme-input border theme-border font-mono text-blue-500 border-blue-500/30">HEIC / HEIF</span>
+          <span class="px-3 py-1.5 rounded-lg theme-input border theme-border font-mono">MAX 50MB</span>
+        </div>
+      </div>
+
+      <!-- Single Active Preview Stage -->
+      <div id="singlePreviewStage" class="hidden relative min-h-[300px] sm:min-h-[420px] lg:min-h-[540px] rounded-2xl theme-card border theme-border overflow-hidden flex flex-col items-center justify-center p-3 sm:p-6">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#3f3f46_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+        <!-- Stage Container -->
+        <div id="previewStageContainer" class="relative max-w-full max-h-[420px] sm:max-h-[560px] lg:max-h-[620px] overflow-hidden rounded-xl border theme-border shadow-2xl flex items-center justify-center">
+          
+          <!-- Live Canvas Output Image -->
+          <img src="" alt="Edited Output" class="processedImageClass max-h-[380px] sm:max-h-[540px] lg:max-h-[600px] w-auto object-contain transition-opacity duration-150" />
+          
+          <!-- Raw Original Background Layer -->
+          <img src="" alt="Original Image" class="originalImageClass absolute inset-0 w-full h-full object-contain pointer-events-none opacity-0 transition-opacity duration-150 z-20" id="rawOriginalOverlayImg" />
+
+          <!-- High-Contrast Badge when Holding Original -->
+          <div id="originalHoldingBadge" class="hidden absolute top-3 left-3 sm:top-4 sm:left-4 z-40 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-lg bg-amber-500 text-black font-extrabold text-[10px] sm:text-xs shadow-xl flex items-center gap-1.5 animate-pulse">
+            <span>👀 RAW UNEDITED ORIGINAL</span>
+          </div>
+
+          <!-- Interactive Freeform Crop Drag Overlay Box -->
+          <div id="cropOverlayBox" class="hidden absolute border-2 border-blue-500 bg-blue-500/15 cursor-move shadow-[0_0_0_9999px_rgba(0,0,0,0.65)] z-30 select-none touch-none rounded-sm">
+            <!-- 3x3 Rule-of-Thirds Composition Grid -->
+            <div class="absolute inset-0 pointer-events-none grid grid-cols-3 grid-rows-3">
+              <div class="border-r border-b border-blue-400/30"></div>
+              <div class="border-r border-b border-blue-400/30"></div>
+              <div class="border-b border-blue-400/30"></div>
+              <div class="border-r border-b border-blue-400/30"></div>
+              <div class="border-r border-b border-blue-400/30"></div>
+              <div class="border-b border-blue-400/30"></div>
+              <div class="border-r border-blue-400/30"></div>
+              <div class="border-r border-blue-400/30"></div>
+              <div></div>
+            </div>
+
+            <!-- Corner Dots (4 corners) -->
+            <div class="absolute -top-2 -left-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md shadow-blue-500/50 cursor-nwse-resize hover:scale-125 transition-transform touch-none z-10" data-handle="tl" title="Resize Top-Left"></div>
+            <div class="absolute -top-2 -right-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md shadow-blue-500/50 cursor-nesw-resize hover:scale-125 transition-transform touch-none z-10" data-handle="tr" title="Resize Top-Right"></div>
+            <div class="absolute -bottom-2 -left-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md shadow-blue-500/50 cursor-nesw-resize hover:scale-125 transition-transform touch-none z-10" data-handle="bl" title="Resize Bottom-Left"></div>
+            <div class="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md shadow-blue-500/50 cursor-nwse-resize hover:scale-125 transition-transform touch-none z-10" data-handle="br" title="Resize Bottom-Right"></div>
+
+            <!-- Edge Center Dots (4 edges) -->
+            <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md shadow-blue-500/50 cursor-ns-resize hover:scale-125 transition-transform touch-none z-10" data-handle="t" title="Resize Top"></div>
+            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md shadow-blue-500/50 cursor-ns-resize hover:scale-125 transition-transform touch-none z-10" data-handle="b" title="Resize Bottom"></div>
+            <div class="absolute top-1/2 -translate-y-1/2 -left-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md shadow-blue-500/50 cursor-ew-resize hover:scale-125 transition-transform touch-none z-10" data-handle="l" title="Resize Left"></div>
+            <div class="absolute top-1/2 -translate-y-1/2 -right-2 w-4 h-4 bg-blue-500 border-2 border-white rounded-full shadow-md shadow-blue-500/50 cursor-ew-resize hover:scale-125 transition-transform touch-none z-10" data-handle="r" title="Resize Right"></div>
+
+            <!-- Box Middle / Center Dot (Move Handle) -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-blue-600 border-2 border-white rounded-full shadow-lg shadow-blue-600/60 cursor-move hover:scale-125 transition-transform touch-none z-10 flex items-center justify-center group" data-handle="c" title="Move Crop Area">
+              <div class="w-1.5 h-1.5 bg-white rounded-full pointer-events-none group-hover:scale-150 transition-transform"></div>
+            </div>
+
+            <!-- Live Pixel Dimensions Badge -->
+            <div class="absolute bottom-2.5 right-2.5 px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-[11px] font-mono font-bold bg-black/80 text-white rounded-lg shadow-xl backdrop-blur-md border border-white/20 pointer-events-none z-10 flex items-center gap-1" id="cropBoxDimensionsText">
+              400 × 300 px
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Before/After Split Slider Stage (Hidden by default) -->
+      <div id="sliderPreviewStage" class="hidden relative min-h-[300px] sm:min-h-[420px] lg:min-h-[540px] rounded-2xl theme-card border theme-border overflow-hidden flex flex-col items-center justify-center p-3 sm:p-6 select-none">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#3f3f46_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+        <div id="sliderStageContainer" class="relative max-w-full max-h-[420px] sm:max-h-[560px] lg:max-h-[620px] overflow-hidden rounded-xl border theme-border shadow-2xl flex items-center justify-center cursor-ew-resize touch-none">
+          <!-- After / Processed Image (Base) -->
+          <img src="" alt="Edited Output" class="processedImageClass max-h-[380px] sm:max-h-[540px] lg:max-h-[600px] w-auto object-contain pointer-events-none" />
+          <span class="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-emerald-600/90 text-white font-bold text-[10px] sm:text-xs shadow-xl backdrop-blur-md pointer-events-none">
+            ⚡ Live Edited Output
+          </span>
+
+          <!-- Before / Original Image (Clipped Overlay) -->
+          <div id="sliderBeforeClip" class="absolute inset-0 w-full h-full pointer-events-none" style="clip-path: inset(0 50% 0 0);">
+            <img src="" alt="Original Image" class="originalImageClass w-full h-full object-contain pointer-events-none" />
+            <span class="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-blue-600/90 text-white font-bold text-[10px] sm:text-xs shadow-xl backdrop-blur-md pointer-events-none">
+              📷 Raw Original Image
+            </span>
+          </div>
+
+          <!-- Drag Handle Divider Line & Handle Button -->
+          <div id="sliderHandleBtn" class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center cursor-ew-resize pointer-events-none">
+            <div class="w-0.5 h-full bg-white shadow-2xl shadow-blue-500"></div>
+            <div class="absolute w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-600 text-white border-2 border-white shadow-2xl flex items-center justify-center transform hover:scale-110 transition-transform">
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8M8 12h8M8 17h8" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison Grid (Hidden by default) -->
+      <div id="sideBySideGrid" class="hidden grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Original Card -->
+        <div class="p-3 sm:p-4 rounded-2xl theme-card border theme-border space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold theme-muted">Original Image</span>
+            <span class="px-2 py-0.5 text-[10px] font-mono bg-zinc-700/30 theme-heading rounded">Raw</span>
+          </div>
+          <div class="h-[280px] sm:h-[420px] flex items-center justify-center rounded-xl bg-black/40 overflow-hidden">
+            <img src="" alt="Original Image" class="originalImageClass max-h-[260px] sm:max-h-[400px] w-auto object-contain" />
+          </div>
+        </div>
+
+        <!-- Edited Card -->
+        <div class="p-3 sm:p-4 rounded-2xl theme-card border border-blue-500/40 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-500">Edited Output</span>
+            <span class="px-2 py-0.5 text-[10px] font-mono bg-blue-600 text-white rounded">Live Canvas</span>
+          </div>
+          <div class="h-[280px] sm:h-[420px] flex items-center justify-center rounded-xl bg-black/40 overflow-hidden">
+            <img src="" alt="Edited Output" class="processedImageClass max-h-[260px] sm:max-h-[400px] w-auto object-contain" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Footer Bar -->
+      <div id="previewFooterBar" class="hidden p-3.5 sm:p-4 rounded-xl theme-card border theme-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 text-xs theme-body">
+        <div class="flex items-center gap-2 overflow-hidden max-w-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+          <strong id="activeFileName" class="theme-heading font-medium truncate">file.png</strong>
+          <span id="activeFileDetails" class="theme-muted shrink-0">0 × 0 px • 0 MB</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 sm:gap-6">
+          <div>Estimated Size: <strong id="estimatedSizeText" class="text-blue-500 font-mono">Calculating...</strong></div>
+          <div>Dimensions: <strong id="outputDimensionsText" class="theme-heading font-mono">0 × 0 px</strong></div>
+          <div>Queue: <strong id="queueCountText" class="theme-heading">0 Images</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Feature Space / Tool Inspector (40% Width, Reduced Compact Height) -->
+    <div id="inspectorPanelSidebar" class="w-full lg:w-[40%] p-5 rounded-2xl theme-card border theme-border space-y-5 shadow-lg transition-all">
+
+      <!-- Batch Upload Queue Box (Visible whenever multiple files are loaded) -->
+      <div id="activeQueueContainerBox" class="hidden p-3.5 rounded-xl theme-input border border-blue-500/30 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold theme-heading flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            Uploaded Images Queue (<span id="queueCountText" class="text-blue-500 font-mono">1</span>)
+          </span>
+          <button id="exportBatchZipBtnSecondary" onclick="document.getElementById('exportBatchZipBtn')?.click()" class="text-[11px] font-bold text-amber-500 hover:underline">
+            ZIP Export All
+          </button>
+        </div>
+        <div class="batchQueueListContainer space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+      </div>
+
+      <!-- TOOL 1: RESIZE -->
+      <div class="tool-inspector-panel space-y-4" data-panel="resize">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Resize Dimensions</h3>
+          <p class="text-xs theme-muted">Scale dimensions or pick social media presets.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium theme-muted mb-1">Width (px)</label>
+            <input type="number" id="widthInput" value="1280" class="w-full px-3 py-2 rounded-lg theme-input border theme-border theme-heading font-mono text-sm focus:border-blue-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium theme-muted mb-1">Height (px)</label>
+            <input type="number" id="heightInput" value="800" class="w-full px-3 py-2 rounded-lg theme-input border theme-border theme-heading font-mono text-sm focus:border-blue-500 focus:outline-none" />
+          </div>
+        </div>
+        <label class="flex items-center gap-2 cursor-pointer pt-1">
+          <input type="checkbox" id="lockRatioCheck" checked class="w-4 h-4 rounded border-zinc-700 text-blue-600 focus:ring-blue-500" />
+          <span class="text-xs theme-heading font-medium">Maintain Aspect Ratio</span>
+        </label>
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Social Media Preset</label>
+          <select id="socialPresetSelect" class="w-full px-3 py-2 rounded-lg theme-input border theme-border theme-heading text-xs focus:border-blue-500 focus:outline-none">
+            <option value="">Custom Dimensions</option>
+            {socialPresets.map(p => <option value={p.value}>{p.label}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <!-- TOOL 2: CROP -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="crop">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Interactive Freeform Crop</h3>
+          <p class="text-xs theme-muted">Drag handles on the image preview or pick preset ratios.</p>
+        </div>
+        
+        <button id="applyFreeCropBtn" class="w-full py-2.5 text-xs font-bold rounded-xl bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Apply Freeform Selection Crop
+        </button>
+
+        <div class="pt-2">
+          <span class="block text-xs font-medium theme-muted mb-2">Preset Aspect Ratios</span>
+          <div class="grid grid-cols-3 gap-2">
+            {['1:1', '4:5', '16:9', '9:16', '21:9'].map(ratio => (
+              <button class="crop-preset-ratio-btn py-2 text-xs font-medium rounded-lg theme-input border theme-border theme-heading hover:border-blue-500 active:scale-95 transition-all" data-ratio={ratio}>
+                {ratio}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button id="resetCropBtn" class="w-full py-2 text-xs font-semibold rounded-lg bg-zinc-700/30 hover:bg-zinc-700/50 theme-heading border theme-border active:scale-95 transition-all">
+          Reset to Original Dimensions
+        </button>
+      </div>
+
+      <!-- TOOL 3: COMPRESS -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="compress">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Image Compression</h3>
+          <p class="text-xs theme-muted">Higher compression decreases image file size.</p>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs theme-muted mb-1">
+            <span class="font-semibold theme-heading">Compression Level</span>
+            <strong id="qualityValueLabel" class="text-blue-500 font-mono">20% (80% Quality)</strong>
+          </div>
+          <input type="range" id="qualityRangeInput" min="0" max="95" value="20" class="w-full cursor-pointer" />
+          <div class="flex justify-between text-[10px] theme-muted mt-1.5 font-mono">
+            <span>0% (Max Quality & Size)</span>
+            <span>95% (High Compression, Min Size)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOL 4: CONVERT -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="convert">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Format Conversion</h3>
+          <p class="text-xs theme-muted">Export into modern web and print file types.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Output Format</label>
+          <select id="formatSelectInput" class="w-full px-3 py-2 rounded-lg theme-input border theme-border theme-heading text-xs focus:border-blue-500 focus:outline-none">
+            <option value="image/jpeg" selected="selected">JPEG / JPG (Universal Default)</option>
+            <option value="image/webp">WebP (Recommended)</option>
+            <option value="image/avif">AVIF (Ultra Light)</option>
+            <option value="image/png">PNG (Lossless)</option>
+            <option value="pdf">PDF Document</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TOOL 5: ROTATE & FLIP -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="rotate">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Rotate & Flip Canvas</h3>
+          <p class="text-xs theme-muted">Orientation controls and horizontal/vertical flips.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="rotateCwBtn" class="py-2.5 text-xs font-medium rounded-lg theme-input border theme-border theme-heading hover:border-blue-500 active:scale-95 transition-all">Rotate +90°</button>
+          <button id="rotateCcwBtn" class="py-2.5 text-xs font-medium rounded-lg theme-input border theme-border theme-heading hover:border-blue-500 active:scale-95 transition-all">Rotate -90°</button>
+          <button id="flipHBtn" class="py-2.5 text-xs font-medium rounded-lg theme-input border theme-border theme-heading hover:border-blue-500 active:scale-95 transition-all">Flip Horizontal</button>
+          <button id="flipVBtn" class="py-2.5 text-xs font-medium rounded-lg theme-input border theme-border theme-heading hover:border-blue-500 active:scale-95 transition-all">Flip Vertical</button>
+        </div>
+      </div>
+
+      <!-- TOOL 6: WATERMARK -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="watermark">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Text Watermark Overlay</h3>
+          <p class="text-xs theme-muted">Protect images with brand text overlay & custom styling.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Watermark Text</label>
+          <input type="text" id="watermarkTextInput" value="Pixel Focal" class="w-full px-3 py-2 rounded-lg theme-input border theme-border theme-heading text-xs focus:border-blue-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs theme-muted mb-1">
+            <span class="font-semibold theme-heading">Font Size</span>
+            <strong id="watermarkSizeVal" class="text-blue-500 font-mono">24px</strong>
+          </div>
+          <input type="range" id="watermarkSizeInput" min="10" max="120" value="24" class="w-full cursor-pointer" />
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-semibold theme-heading">Color Palette</label>
+            <div class="flex items-center gap-2">
+              <input type="color" id="watermarkColorInput" value="#ffffff" class="w-6 h-6 rounded-md cursor-pointer border border-white/20 bg-transparent p-0" title="Custom Color Picker" />
+              <span id="watermarkColorHex" class="font-mono text-xs text-blue-500 font-bold uppercase">#FFFFFF</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-5 gap-1.5 pt-1">
+            {['#ffffff', '#000000', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#a855f7', '#06b6d4', '#e2e8f0'].map(color => (
+              <button type="button" class="wm-color-swatch w-full h-7 rounded-lg border border-white/20 shadow-sm hover:scale-110 active:scale-95 transition-all" data-color={color} style={`background-color: ${color}`} title={color}></button>
+            ))}
+          </div>
+          <div id="wmImagePaletteContainer" class="hidden pt-2 border-t theme-border mt-2">
+            <span class="block text-[11px] font-medium theme-muted mb-1">Image extracted palette:</span>
+            <div id="wmImagePaletteSwatches" class="flex flex-wrap gap-1.5"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs theme-muted mb-1">
+            <span class="font-semibold theme-heading">Opacity</span>
+            <strong id="watermarkOpacityVal" class="text-blue-500 font-mono">60%</strong>
+          </div>
+          <input type="range" id="watermarkOpacityInput" min="10" max="100" value="60" class="w-full cursor-pointer" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Position</label>
+          <select id="watermarkPosSelect" class="w-full px-3 py-2 rounded-lg theme-input border theme-border theme-heading text-xs focus:border-blue-500 focus:outline-none">
+            <option value="bottom-right">Bottom Right</option>
+            <option value="bottom-left">Bottom Left</option>
+            <option value="top-right">Top Right</option>
+            <option value="top-left">Top Left</option>
+            <option value="center">Center</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TOOL 7: METADATA & EXIF -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="metadata">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Metadata Inspector</h3>
+          <p class="text-xs theme-muted">Inspect EXIF data and strip location/privacy tags.</p>
+        </div>
+        <div id="metadataTagsList" class="space-y-1">
+          <div class="text-xs theme-muted">Upload an image to inspect metadata...</div>
+        </div>
+      </div>
+
+      <!-- TOOL 8: PALETTE -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="palette">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Color Palette Extraction</h3>
+          <p class="text-xs theme-muted">Dominant HEX color codes from image pixels.</p>
+        </div>
+        <div id="paletteColorsGrid" class="grid grid-cols-3 gap-2"></div>
+      </div>
+
+      <!-- TOOL 9: OCR SCANNER -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="ocr">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">OCR Text Detection</h3>
+          <p class="text-xs theme-muted">Extract embedded text directly from pixels.</p>
+        </div>
+        <textarea id="ocrOutputText" rows="6" readonly class="w-full p-3 rounded-lg theme-input border theme-border font-mono text-xs theme-heading focus:outline-none"></textarea>
+      </div>
+
+      <!-- TOOL 10: RESPONSIVE CODE -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="responsive">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Developer Code Generator</h3>
+          <p class="text-xs theme-muted">Production markup for HTML, Next.js, Astro, React, and Vue.</p>
+        </div>
+        <div class="flex flex-wrap gap-1 theme-input p-1 rounded-lg border theme-border">
+          <button data-fw="html-picture" class="code-fw-btn px-2.5 py-1 text-[11px] font-medium rounded-md bg-blue-600 text-white">HTML</button>
+          <button data-fw="nextjs" class="code-fw-btn px-2.5 py-1 text-[11px] font-medium rounded-md theme-muted hover:text-blue-500">Next.js</button>
+          <button data-fw="astro" class="code-fw-btn px-2.5 py-1 text-[11px] font-medium rounded-md theme-muted hover:text-blue-500">Astro</button>
+          <button data-fw="react" class="code-fw-btn px-2.5 py-1 text-[11px] font-medium rounded-md theme-muted hover:text-blue-500">React</button>
+          <button data-fw="vue" class="code-fw-btn px-2.5 py-1 text-[11px] font-medium rounded-md theme-muted hover:text-blue-500">Vue</button>
+        </div>
+        <pre class="p-3 rounded-lg theme-input border theme-border overflow-x-auto text-[11px] font-mono text-blue-500"><code id="responsiveCodeBlock">Upload image to generate snippet...</code></pre>
+        <button id="copyCodeSnippetBtn" class="w-full py-2 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-500 text-white active:scale-95 transition-all">Copy Code Snippet</button>
+      </div>
+
+      <!-- TOOL 11: BATCH QUEUE -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="batch">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Batch Queue Manager</h3>
+          <p class="text-xs theme-muted">Process multiple images in a single batch archive.</p>
+        </div>
+        <div id="batchQueueList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+      </div>
+
+      <!-- TOOL 12: FILTERS & FX -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="filters">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Canvas Filters & FX</h3>
+          <p class="text-xs theme-muted">Adjust brightness, contrast, saturation, and blur.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Brightness</label>
+          <input type="range" id="brightnessInput" min="0" max="200" value="100" class="w-full" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Contrast</label>
+          <input type="range" id="contrastInput" min="0" max="200" value="100" class="w-full" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Saturation</label>
+          <input type="range" id="saturationInput" min="0" max="200" value="100" class="w-full" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Blur (px)</label>
+          <input type="range" id="blurInput" min="0" max="20" value="0" class="w-full" />
+        </div>
+      </div>
+
+      <!-- TOOL 13: BORDERS & CANVAS -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="borders">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">Borders & Padding</h3>
+          <p class="text-xs theme-muted">Outer padding margins and background canvas fill.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Outer Padding (px)</label>
+          <input type="number" id="paddingInput" value="0" min="0" max="200" class="w-full px-3 py-2 rounded-lg theme-input border theme-border theme-heading font-mono text-xs focus:border-blue-500 focus:outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium theme-muted mb-1">Background Fill Color</label>
+          <input type="color" id="bgColorInput" value="#000000" class="w-full h-10 rounded-lg theme-input border theme-border cursor-pointer" />
+        </div>
+      </div>
+
+      <!-- TOOL 14: BACKGROUND REMOVAL -->
+      <div class="tool-inspector-panel hidden space-y-4" data-panel="bgremove">
+        <div class="pb-3 border-b theme-border">
+          <h3 class="text-base font-bold theme-heading">AI Background Remover</h3>
+          <p class="text-xs theme-muted">Client-side segmenter model (In Development).</p>
+        </div>
+        <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs">
+          ⚡ AI Background Remover runs 100% locally via WebAssembly ONNX runtime in upcoming v2.1 update.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dock Component -->
+  <ToolDock />
+
+  <!-- Global Progress Bar Overlay -->
+  <div id="globalProgressOverlay" class="hidden fixed inset-0 z-[120] bg-black/70 backdrop-blur-md flex flex-col items-center justify-center text-white transition-all">
+    <div class="w-80 max-w-[90vw] p-6 rounded-2xl theme-card border theme-border shadow-2xl space-y-4 text-center">
+      <div class="w-12 h-12 mx-auto rounded-full bg-blue-600/20 border border-blue-500 text-blue-500 flex items-center justify-center animate-spin">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      </div>
+      <div>
+        <h4 id="globalProgressLabel" class="text-sm font-bold theme-heading">Processing...</h4>
+        <p class="text-xs theme-muted mt-1">Please wait while your image is generated</p>
+      </div>
+      <div class="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
+        <div id="globalProgressBar" class="h-full bg-gradient-to-r from-blue-600 to-indigo-500 transition-all duration-200" style="width: 0%;"></div>
+      </div>
+      <div class="text-xs font-mono theme-muted text-right"><span id="globalProgressText">0%</span></div>
+    </div>
+  </div>
+
+  <!-- Edit History Modal -->
+  <div id="historyModal" class="hidden fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl theme-card border theme-border shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b theme-border">
+        <h3 class="text-lg font-bold theme-heading flex items-center gap-2">
+          <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Edit Action History
+        </h3>
+        <button onclick="document.getElementById('historyModal')?.classList.add('hidden')" class="p-1 rounded-lg theme-muted hover:theme-heading text-sm">✕</button>
+      </div>
+      <div id="historyListContainer" class="space-y-2 max-h-80 overflow-y-auto">
+        <div class="p-6 text-center text-xs theme-muted">No edit history recorded yet.</div>
+      </div>
+      <div class="pt-3 border-t theme-border flex justify-end">
+        <button onclick="document.getElementById('historyModal')?.classList.add('hidden')" class="px-4 py-2 text-xs font-semibold theme-input rounded-xl theme-heading">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Files Modal -->
+  <div id="recentFilesModal" class="hidden fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-lg rounded-2xl theme-card border theme-border shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b theme-border">
+        <h3 class="text-lg font-bold theme-heading flex items-center gap-2">
+          <svg class="w-5 h-5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+          Recent Image Files
+        </h3>
+        <button onclick="document.getElementById('recentFilesModal')?.classList.add('hidden')" class="p-1 rounded-lg theme-muted hover:theme-heading text-sm">✕</button>
+      </div>
+      <div id="recentFilesListContainer" class="space-y-2 max-h-80 overflow-y-auto">
+        <div class="p-6 text-center text-xs theme-muted">No recent files found.</div>
+      </div>
+      <div class="pt-3 border-t theme-border flex justify-between items-center">
+        <button onclick="window.pixelEditor?.clearRecentFiles()" class="px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-500/10 rounded-lg transition-colors">Clear History</button>
+        <button onclick="document.getElementById('recentFilesModal')?.classList.add('hidden')" class="px-4 py-2 text-xs font-semibold theme-input rounded-xl theme-heading">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced Export Settings Modal -->
+  <div id="advancedExportModal" class="hidden fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-lg rounded-2xl theme-card border theme-border shadow-2xl p-6 space-y-5">
+      <div class="flex items-center justify-between pb-3 border-b theme-border">
+        <h3 class="text-lg font-bold theme-heading flex items-center gap-2">
+          <svg class="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Advanced Export Settings
+        </h3>
+        <button onclick="document.getElementById('advancedExportModal')?.classList.add('hidden')" class="p-1 rounded-lg theme-muted hover:theme-heading text-sm">✕</button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold theme-heading mb-1.5">Output Format</label>
+          <select id="advExportFormat" class="w-full px-3 py-2 rounded-xl theme-input border theme-border theme-heading font-medium">
+            <option value="image/png">PNG (Lossless, Transparency)</option>
+            <option value="image/jpeg" selected>JPEG (High Compatibility)</option>
+            <option value="image/webp">WebP (Next-Gen Web)</option>
+            <option value="image/avif">AVIF (Ultra High Compression)</option>
+            <option value="image/svg+xml">SVG Vector Wrapper</option>
+            <option value="application/pdf">PDF Document</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="flex justify-between font-semibold theme-heading mb-1.5">
+            <span>Compression Level</span>
+            <span id="advQualityVal" class="text-blue-500 font-mono">15% (85% Quality)</span>
+          </div>
+          <input type="range" id="advExportQuality" min="0" max="95" value="15" class="w-full cursor-pointer" oninput="
+            const comp = parseInt(this.value);
+            const qual = Math.max(5, 100 - comp);
+            document.getElementById('advQualityVal').textContent = comp + '% (' + qual + '% Quality)';
+          " />
+          <div class="flex justify-between text-[10px] theme-muted mt-1 font-mono">
+            <span>0% (Max Quality & Size)</span>
+            <span>95% (High Compression, Min Size)</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold theme-heading mb-1.5">Resolution / Resize Scale</label>
+          <div class="grid grid-cols-4 gap-2">
+            <button type="button" class="adv-scale-btn px-2.5 py-1.5 rounded-lg border border-blue-500 bg-blue-500/10 text-blue-500 font-bold" data-scale="100">100%</button>
+            <button type="button" class="adv-scale-btn px-2.5 py-1.5 rounded-lg theme-input border theme-border theme-heading" data-scale="75">75%</button>
+            <button type="button" class="adv-scale-btn px-2.5 py-1.5 rounded-lg theme-input border theme-border theme-heading" data-scale="50">50%</button>
+            <button type="button" class="adv-scale-btn px-2.5 py-1.5 rounded-lg theme-input border theme-border theme-heading" data-scale="25">25%</button>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t theme-border space-y-2">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="advKeepExif" checked class="rounded border-zinc-700 text-blue-600 focus:ring-0" />
+            <span class="theme-heading font-medium">Strip EXIF metadata for security & privacy</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t theme-border flex items-center justify-end gap-2">
+        <button onclick="document.getElementById('advancedExportModal')?.classList.add('hidden')" class="px-4 py-2 text-xs font-semibold theme-input rounded-xl theme-heading">Cancel</button>
+        <button onclick="
+          const fmt = document.getElementById('advExportFormat')?.value;
+          const comp = parseInt(document.getElementById('advExportQuality')?.value || '15');
+          const qual = Math.max(5, 100 - comp);
+          const scale = parseInt(document.querySelector('.adv-scale-btn.border-blue-500')?.getAttribute('data-scale') || '100');
+          window.pixelEditor?.exportWithAdvancedSettings({ format: fmt, quality: qual, scalePercent: scale });
+          document.getElementById('advancedExportModal')?.classList.add('hidden');
+        " class="px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-lg transition-all">
+          Download Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.adv-scale-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.adv-scale-btn').forEach(b => {
+            b.classList.remove('border-blue-500', 'bg-blue-500/10', 'text-blue-500', 'font-bold');
+            b.classList.add('theme-input', 'theme-border', 'theme-heading');
+          });
+          btn.classList.add('border-blue-500', 'bg-blue-500/10', 'text-blue-500', 'font-bold');
+          btn.classList.remove('theme-input', 'theme-border', 'theme-heading');
+        });
+      });
+    });
+  </script>
+</section>

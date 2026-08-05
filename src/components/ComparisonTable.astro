@@ -1,0 +1,83 @@
+---
+const matrix = [
+  { feature: '100% Client-Side (0 Server Uploads)', focal: true, resizer: false, tinypng: false, squoosh: true, canva: false, iloveimg: false },
+  { feature: 'Zero File Size / Queue Limits', focal: true, resizer: false, tinypng: false, squoosh: true, canva: false, iloveimg: false },
+  { feature: 'No Sign-Up or Account Required', focal: true, resizer: true, tinypng: true, squoosh: true, canva: false, iloveimg: true },
+  { feature: 'Responsive Code Generator (HTML/React/Next/Astro)', focal: true, resizer: false, tinypng: false, squoosh: false, canva: false, iloveimg: false },
+  { feature: 'Dominant Color Palette Extraction', focal: true, resizer: false, tinypng: false, squoosh: false, canva: false, iloveimg: false },
+  { feature: 'EXIF Metadata Security Stripping', focal: true, resizer: false, tinypng: true, squoosh: false, canva: false, iloveimg: false },
+  { feature: 'Client OCR Text Extraction', focal: true, resizer: false, tinypng: false, squoosh: false, canva: false, iloveimg: false },
+  { feature: 'Batch Processing ZIP Export', focal: true, resizer: true, tinypng: true, squoosh: false, canva: false, iloveimg: true },
+  { feature: 'Open Source & Free Forever', focal: true, resizer: false, tinypng: false, squoosh: true, canva: false, iloveimg: false },
+];
+---
+
+<section id="comparison" class="py-20 md:py-28 border-b border-white/5 bg-[#09090b]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="px-3.5 py-1 text-xs font-semibold tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-full uppercase">
+        HONEST COMPARISON
+      </span>
+      <h2 class="mt-4 text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        Why Pixel Focal stands out.
+      </h2>
+      <p class="mt-4 text-base sm:text-lg text-zinc-400">
+        See how Pixel Focal compares against traditional web image utilities and cloud convert engines.
+      </p>
+    </div>
+
+    <!-- Comparison Table Wrapper -->
+    <div class="overflow-x-auto rounded-2xl border border-white/10 bg-zinc-900/60 backdrop-blur-md shadow-2xl">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-white/10 bg-zinc-950/80">
+            <th class="py-4 px-6 text-sm font-bold text-white">Capabilities & Privacy</th>
+            <th class="py-4 px-4 text-center text-sm font-extrabold text-blue-400 bg-blue-600/10 border-x border-blue-500/20">Pixel Focal</th>
+            <th class="py-4 px-4 text-center text-xs font-semibold text-zinc-400">ImageResizer</th>
+            <th class="py-4 px-4 text-center text-xs font-semibold text-zinc-400">TinyPNG</th>
+            <th class="py-4 px-4 text-center text-xs font-semibold text-zinc-400">Squoosh</th>
+            <th class="py-4 px-4 text-center text-xs font-semibold text-zinc-400">Canva</th>
+            <th class="py-4 px-4 text-center text-xs font-semibold text-zinc-400">iLoveIMG</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5 text-xs sm:text-sm">
+          {matrix.map((r) => (
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 px-6 font-medium text-zinc-200">{r.feature}</td>
+              
+              <!-- Pixel Focal -->
+              <td class="py-4 px-4 text-center bg-blue-600/10 border-x border-blue-500/20">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-500/30">✓</span>
+              </td>
+
+              <!-- ImageResizer -->
+              <td class="py-4 px-4 text-center">
+                {r.resizer ? <span class="text-emerald-400">✓</span> : <span class="text-zinc-600">✕</span>}
+              </td>
+
+              <!-- TinyPNG -->
+              <td class="py-4 px-4 text-center">
+                {r.tinypng ? <span class="text-emerald-400">✓</span> : <span class="text-zinc-600">✕</span>}
+              </td>
+
+              <!-- Squoosh -->
+              <td class="py-4 px-4 text-center">
+                {r.squoosh ? <span class="text-emerald-400">✓</span> : <span class="text-zinc-600">✕</span>}
+              </td>
+
+              <!-- Canva -->
+              <td class="py-4 px-4 text-center">
+                {r.canva ? <span class="text-emerald-400">✓</span> : <span class="text-zinc-600">✕</span>}
+              </td>
+
+              <!-- iLoveIMG -->
+              <td class="py-4 px-4 text-center">
+                {r.iloveimg ? <span class="text-emerald-400">✓</span> : <span class="text-zinc-600">✕</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

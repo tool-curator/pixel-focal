@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow API endpoints & temporary cache if any
+Disallow: /api/
+Disallow: /_astro/
+
+# Official XML Sitemap Location
+Sitemap: https://pixelfocal.com/sitemap.xml

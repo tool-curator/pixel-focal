@@ -1,11 +1,63 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Workspace from '../components/Workspace.astro';
+import Features from '../components/Features.astro';
+import ComparisonTable from '../components/ComparisonTable.astro';
+import BeforeAfterSlider from '../components/BeforeAfterSlider.astro';
+import WorkflowTimeline from '../components/WorkflowTimeline.astro';
+import WhyPixelFocal from '../components/WhyPixelFocal.astro';
+import PerformanceMetrics from '../components/PerformanceMetrics.astro';
+import Testimonials from '../components/Testimonials.astro';
+import FaqSection from '../components/FaqSection.astro';
+import PricingSection from '../components/PricingSection.astro';
+import SeoContent from '../components/SeoContent.astro';
+import Footer from '../components/Footer.astro';
+import CommandPaletteModal from '../components/CommandPaletteModal.astro';
+import JsonLd from '../components/JsonLd.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+	title="Pixel Focal | 100% Free Image Utilities"
+	description="Pixel Focal is a 100% free, privacy-first browser image editor for resizing, cropping, compressing, converting, and watermarking images with zero server uploads."
+>
+	<JsonLd type="homepage" />
+	<Header />
+	<main>
+		<Hero />
+		
+		<!-- Interactive Comparison Preview Section -->
+		<section class="py-12 theme-bg border-b theme-border">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+				<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-xs font-semibold uppercase tracking-wider">
+					✨ Interactive Quality Comparison
+				</div>
+				<h2 class="text-2xl sm:text-4xl font-extrabold theme-heading tracking-tight">
+					Zero Visual Degradation • 80%+ File Size Reduction
+				</h2>
+				<p class="text-xs sm:text-sm theme-body max-w-xl mx-auto">
+					Drag the comparison slider below to inspect real-time WebP & AVIF compression quality versus raw camera originals.
+				</p>
+				<BeforeAfterSlider />
+			</div>
+		</section>
+
+		<Workspace />
+		<Features />
+		<ComparisonTable />
+		<WorkflowTimeline />
+		<WhyPixelFocal />
+		<PerformanceMetrics />
+		<Testimonials />
+		<FaqSection />
+		<PricingSection />
+		<SeoContent />
+	</main>
+	<Footer />
+	
+	<!-- Raycast/Vercel Command Palette Overlay -->
+	<CommandPaletteModal />
+
+	<script src="../scripts/editor.ts"></script>
 </Layout>

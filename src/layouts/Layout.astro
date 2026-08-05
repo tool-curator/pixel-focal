@@ -1,23 +1,108 @@
-<!doctype html>
-<html lang="en">
+---
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	canonicalUrl?: string;
+	robots?: string;
+}
+
+const {
+	title = "Pixel Focal | 100% Free Image Utilities",
+	description = "Privacy-first browser image editor for resizing, cropping, compressing, converting, and watermarking images with zero server uploads.",
+	image = "/images/pixel-focal-og.png",
+	canonicalUrl = "https://pixelfocal.com",
+	robots = "index, follow",
+} = Astro.props;
+---
+
+<!aria-label="Pixel Focal Image Utilities">
+<html lang="en" class="dark">
 	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<!-- Google tag (gtag.js) -->
+		<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-G8M3QKGQH1"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'G-G8M3QKGQH1');
+		</script>
+
+		<!-- Google AdSense -->
+		<script is:inline async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4117658743162532" crossorigin="anonymous"></script>
+
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content={robots} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+
+		<!-- Open Graph -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={image} />
+
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
+
+		<!-- Google Fonts Inter -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+		<!-- HEIC Decoder Library -->
+		<script is:inline src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+
+		<meta name="theme-color" content="#2563eb" />
+		<link rel="manifest" href="/manifest.json" />
+
+		<script is:inline>
+			(function() {
+				// Theme initialization
+				const theme = localStorage.getItem('theme');
+				if (theme === 'beige' || theme === 'light') {
+					document.documentElement.classList.remove('dark');
+					document.documentElement.classList.add('beige', 'light');
+				} else {
+					document.documentElement.classList.remove('beige', 'light');
+					document.documentElement.classList.add('dark');
+				}
+
+				// Dynamic tab title change on tab switch
+				const originalTitle = document.title;
+				document.addEventListener('visibilitychange', function() {
+					if (document.hidden) {
+						document.title = "Pixel Focal | 100% Free Image Utilities";
+					} else {
+						document.title = originalTitle;
+					}
+				});
+
+				// Register PWA Service Worker for Offline desktop support
+				if ('serviceWorker' in navigator) {
+					window.addEventListener('load', function() {
+						navigator.serviceWorker.register('/sw.js').catch(function(err) {
+							console.log('SW registration failed:', err);
+						});
+					});
+				}
+			})();
+		</script>
 	</head>
-	<body>
+	<body class="theme-bg theme-heading font-sans min-h-screen antialiased selection:bg-blue-500 selection:text-white">
 		<slot />
 	</body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+<style is:global>
+	@import "../styles/global.css";
 </style>

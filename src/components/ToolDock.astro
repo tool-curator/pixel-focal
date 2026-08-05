@@ -1,0 +1,140 @@
+---
+const tools = [
+  { id: 'resize', label: 'Resize', icon: 'M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4' },
+  { id: 'crop', label: 'Crop', icon: 'M5 3v14a2 2 0 002 2h14M3 5h14a2 2 0 012 2v14' },
+  { id: 'compress', label: 'Compress', icon: 'M19 14l-7 7m0 0l-7-7m7 7V3' },
+  { id: 'convert', label: 'Convert', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4' },
+  { id: 'rotate', label: 'Rotate', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
+  { id: 'watermark', label: 'Watermark', icon: 'M7 20l4-16m2 16l4-16M6 9h14M4 15h14' },
+  { id: 'metadata', label: 'EXIF Tags', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { id: 'palette', label: 'Palette', icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01' },
+  { id: 'ocr', label: 'OCR Text', icon: 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z' },
+  { id: 'responsive', label: 'Code Gen', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
+  { id: 'batch', label: 'Batch ZIP', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
+  { id: 'filters', label: 'Filters', icon: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4' },
+  { id: 'borders', label: 'Borders', icon: 'M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5z' },
+];
+---
+
+<div class="fixed bottom-2.5 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94vw] max-w-5xl space-y-2 select-none">
+  <!-- Tool Search Bar (Floating) -->
+  <div id="toolDockSearchContainer" class="hidden max-w-xs mx-auto p-1.5 rounded-xl glass-panel theme-card border theme-border shadow-xl flex items-center gap-2">
+    <svg class="w-4 h-4 text-blue-500 shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+    <input
+      type="text"
+      id="dockToolSearchInput"
+      placeholder="Search tools (e.g. crop, resize)..."
+      class="w-full bg-transparent text-xs theme-heading placeholder:theme-muted focus:outline-none"
+      oninput="window.pixelEditor?.filterTools(this.value)"
+    />
+    <button onclick="document.getElementById('toolDockSearchContainer')?.classList.add('hidden')" class="p-1 theme-muted hover:theme-heading text-xs">✕</button>
+  </div>
+
+  <!-- Dock Bar Wrapper with Small Scroll Buttons at Ends -->
+  <div class="glass-panel theme-card p-1 sm:p-2 rounded-2xl shadow-2xl flex items-center gap-1 sm:gap-1.5 max-w-full border theme-border relative">
+    <!-- Small Left Scroll Button at Bar End -->
+    <button
+      id="dockScrollLeftBtn"
+      title="Scroll Left"
+      onclick="document.getElementById('dockScrollContainer')?.scrollBy({ left: -220, behavior: 'smooth' })"
+      class="hidden sm:flex p-2 rounded-xl theme-card-solid hover:border-blue-500/50 text-blue-500 hover:bg-blue-600/10 active:scale-95 transition-all shrink-0 items-center justify-center cursor-pointer shadow-sm"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Search Trigger Toggle Button -->
+    <button
+      onclick="
+        const box = document.getElementById('toolDockSearchContainer');
+        box?.classList.toggle('hidden');
+        if (!box?.classList.contains('hidden')) document.getElementById('dockToolSearchInput')?.focus();
+      "
+      title="Search tools"
+      class="p-2 sm:p-2.5 rounded-xl theme-card-solid hover:border-blue-500/50 text-blue-500 active:scale-95 transition-all shrink-0"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </button>
+
+    <!-- Scrollable Tool Items Container -->
+    <div id="dockScrollContainer" class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto max-w-full custom-dock-scrollbar scroll-smooth py-0.5">
+      {tools.map(tool => (
+        <button
+          data-tool={tool.id}
+          aria-label={tool.label}
+          title={tool.label}
+          class={`dock-tool-btn group relative px-2.5 py-1.5 sm:px-3.5 sm:py-2.5 rounded-xl theme-card-solid hover:border-blue-500/50 hover:text-blue-500 active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 select-none cursor-pointer whitespace-nowrap text-xs font-semibold ${tool.id === 'resize' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 border-blue-500 font-bold' : 'theme-heading'}`}
+        >
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={tool.icon} />
+          </svg>
+
+          <!-- Explicit Text Label -->
+          <span class="inline-block tracking-tight text-[11px] sm:text-xs">{tool.label}</span>
+
+          <!-- Favorite Star Icon -->
+          <span
+            onclick={`event.stopPropagation(); window.pixelEditor?.toggleFavoriteTool('${tool.id}')`}
+            title="Toggle favorite"
+            class="favorite-star-icon hidden text-amber-400 hover:scale-125 transition-transform text-[10px]"
+          >
+            ⭐
+          </span>
+        </button>
+      ))}
+    </div>
+
+    <!-- Small Right Scroll Button at Bar End -->
+    <button
+      id="dockScrollRightBtn"
+      title="Scroll Right"
+      onclick="document.getElementById('dockScrollContainer')?.scrollBy({ left: 220, behavior: 'smooth' })"
+      class="hidden sm:flex p-2 rounded-xl theme-card-solid hover:border-blue-500/50 text-blue-500 hover:bg-blue-600/10 active:scale-95 transition-all shrink-0 items-center justify-center cursor-pointer shadow-sm"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const dockContainer = document.getElementById('dockScrollContainer');
+    if (!dockContainer) return;
+
+    // Convert mouse vertical scroll wheel into horizontal scroll over tool dock
+    dockContainer.addEventListener('wheel', (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        dockContainer.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
+  });
+</script>
+
+<style>
+  .custom-dock-scrollbar::-webkit-scrollbar {
+    height: 4px;
+  }
+  .custom-dock-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-dock-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.4);
+    border-radius: 9999px;
+  }
+  .custom-dock-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.8);
+  }
+  .custom-dock-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59, 130, 246, 0.4) transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+</style>

@@ -1,0 +1,226 @@
+---
+const allTools = [
+  { id: 'resize', name: 'Image Resizer', category: 'Core Editing', key: 'R' },
+  { id: 'crop', name: 'Image Cropper', category: 'Core Editing', key: 'C' },
+  { id: 'compress', name: 'Image Compressor', category: 'Core Editing', key: 'K' },
+  { id: 'convert', name: 'Format Converter', category: 'Core Editing', key: 'F' },
+  { id: 'rotate', name: 'Rotate & Flip Canvas', category: 'Transform', key: 'O' },
+  { id: 'watermark', name: 'Text & Logo Watermark', category: 'Brand', key: 'W' },
+  { id: 'metadata', name: 'EXIF Metadata Sanitizer', category: 'Privacy', key: 'M' },
+  { id: 'palette', name: 'Color Palette Extractor', category: 'Developer', key: 'P' },
+  { id: 'ocr', name: 'OCR Text Scanner', category: 'Utilities', key: 'T' },
+  { id: 'responsive', name: 'Developer Code Generator', category: 'Developer', key: 'D' },
+  { id: 'batch', name: 'Batch Queue ZIP Archive', category: 'Batch', key: 'B' },
+  { id: 'filters', name: 'Canvas Filters & FX', category: 'Transform', key: 'X' },
+  { id: 'borders', name: 'Borders & Padding Fill', category: 'Transform', key: 'A' },
+  { id: 'action-history', name: 'View Edit Action History', category: 'History', key: 'H' },
+  { id: 'action-recent', name: 'Open Recent Files Drawer', category: 'History', key: 'R' },
+  { id: 'action-export', name: 'Open Advanced Export Settings', category: 'Export', key: 'E' },
+  { id: 'action-slider', name: 'Switch to Before/After Slider Mode', category: 'View Mode', key: 'S' },
+];
+
+const shortcuts = [
+  { keys: ['Ctrl', 'Z'], action: 'Undo Last Edit Action' },
+  { keys: ['Ctrl', 'Y'], action: 'Redo Edit Action' },
+  { keys: ['Ctrl', 'O'], action: 'Upload New Image' },
+  { keys: ['Ctrl', 'E'], action: 'Export Edited Image' },
+  { keys: ['Hold'], action: 'View Raw Original' },
+  { keys: ['Ctrl', 'K'], action: 'Toggle Command Palette' },
+  { keys: ['Esc'], action: 'Close Modal' },
+];
+---
+
+<!-- Raycast/Vercel-Inspired Command Palette Overlay Modal -->
+<div id="commandPaletteOverlay" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden flex items-start justify-center pt-16 sm:pt-24 px-4 transition-opacity duration-200">
+  
+  <div id="commandPaletteContainer" class="w-full max-w-xl rounded-2xl theme-card border theme-border shadow-2xl overflow-hidden flex flex-col transform transition-all duration-200 scale-95 opacity-0">
+    
+    <!-- Search Bar Input -->
+    <div class="p-4 border-b theme-border flex items-center gap-3">
+      <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input
+        type="text"
+        id="cmdPaletteSearchInput"
+        placeholder="Type a tool name or search shortcut (e.g. crop, compress)..."
+        class="w-full bg-transparent theme-heading font-medium text-sm focus:outline-none placeholder:theme-muted"
+        autocomplete="off"
+      />
+      <button id="cmdPaletteCloseBtn" class="px-2 py-1 text-[10px] font-mono theme-input theme-muted rounded-md border theme-border hover:text-blue-500 cursor-pointer">ESC</button>
+    </div>
+
+    <!-- Scrollable Results Section -->
+    <div class="p-3 max-h-80 overflow-y-auto space-y-4">
+      
+      <!-- Tools Section -->
+      <div>
+        <span class="text-[10px] font-mono font-bold text-blue-500 uppercase tracking-wider block px-2 mb-2">
+          Image Utility Tools (15)
+        </span>
+        <div id="cmdPaletteToolsList" class="space-y-1">
+          {allTools.map(t => (
+            <button
+              data-cmd-tool-id={t.id}
+              class="cmd-palette-item w-full p-2.5 rounded-xl hover:bg-blue-600/10 theme-heading flex items-center justify-between text-xs font-semibold active:scale-95 transition-all text-left group cursor-pointer"
+            >
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-500 opacity-60 group-hover:opacity-100"></span>
+                <span>{t.name}</span>
+                <span class="text-[10px] font-mono theme-muted">({t.category})</span>
+              </div>
+              <span class="text-[10px] font-mono text-blue-500 font-bold">Select ↵</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Shortcuts Section -->
+      <div class="pt-2 border-t theme-border">
+        <span class="text-[10px] font-mono font-bold text-blue-500 uppercase tracking-wider block px-2 mb-2">
+          Keyboard Shortcuts
+        </span>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          {shortcuts.map(s => (
+            <div class="p-2 rounded-lg theme-input border theme-border flex items-center justify-between">
+              <span class="theme-muted text-[11px]">{s.action}</span>
+              <div class="flex items-center gap-1">
+                {s.keys.map(k => (
+                  <kbd class="px-1.5 py-0.5 text-[10px] font-mono theme-heading bg-blue-600/20 border border-blue-500/30 rounded">{k}</kbd>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer Strip -->
+    <div class="p-3 border-t theme-border flex items-center justify-between text-[11px] theme-muted bg-black/10">
+      <span>ProTip: Press <kbd class="px-1 py-0.5 font-mono theme-heading theme-input border theme-border rounded text-[10px]">Ctrl + K</kbd> anywhere to open</span>
+      <span>Pixel Focal Studio</span>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Cmd+K Trigger Button -->
+<button id="cmdPaletteTriggerBtn" aria-label="Open Command Palette" title="Open Command Palette (Ctrl+K)" class="fixed bottom-20 right-6 z-40 px-3.5 py-2.5 rounded-xl theme-card border theme-border shadow-2xl hover:border-blue-500/50 hover:bg-blue-600/10 active:scale-95 transition-all hidden lg:flex items-center gap-2 text-xs font-bold theme-heading select-none cursor-pointer">
+  <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+  <span>Cmd / Ctrl + K</span>
+</button>
+
+<script is:inline>
+  (function() {
+    function initCmdPalette() {
+      const overlay = document.getElementById('commandPaletteOverlay');
+      const container = document.getElementById('commandPaletteContainer');
+      const searchInput = document.getElementById('cmdPaletteSearchInput');
+      const triggerBtn = document.getElementById('cmdPaletteTriggerBtn');
+      const closeBtn = document.getElementById('cmdPaletteCloseBtn');
+
+      function openCmdPalette() {
+        if (!overlay || !container) return;
+        overlay.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          container.classList.remove('scale-95', 'opacity-0');
+          container.classList.add('scale-100', 'opacity-100');
+          if (searchInput) searchInput.focus();
+        });
+      }
+
+      function closeCmdPalette() {
+        if (!overlay || !container) return;
+        container.classList.remove('scale-100', 'opacity-100');
+        container.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+          if (searchInput) searchInput.value = '';
+          filterItems('');
+        }, 150);
+      }
+
+      triggerBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openCmdPalette();
+      });
+
+      closeBtn?.addEventListener('click', closeCmdPalette);
+
+      overlay?.addEventListener('click', (e) => {
+        if (e.target === overlay) closeCmdPalette();
+      });
+
+      window.addEventListener('keydown', (e) => {
+        const key = e.key ? e.key.toLowerCase() : '';
+        if ((e.metaKey || e.ctrlKey) && key === 'k') {
+          e.preventDefault();
+          if (overlay?.classList.contains('hidden')) {
+            openCmdPalette();
+          } else {
+            closeCmdPalette();
+          }
+        }
+        if (key === 'escape' && !overlay?.classList.contains('hidden')) {
+          closeCmdPalette();
+        }
+      });
+
+      function filterItems(query) {
+        const q = query.toLowerCase().trim();
+        document.querySelectorAll('.cmd-palette-item').forEach(item => {
+          const text = item.textContent?.toLowerCase() || '';
+          if (!q || text.includes(q)) {
+            item.classList.remove('hidden');
+          } else {
+            item.classList.add('hidden');
+          }
+        });
+      }
+
+      searchInput?.addEventListener('input', (e) => {
+        filterItems(e.target.value);
+      });
+
+      document.querySelectorAll('.cmd-palette-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const toolId = item.getAttribute('data-cmd-tool-id');
+          closeCmdPalette();
+
+          if (toolId === 'action-history') {
+            document.getElementById('historyModal')?.classList.remove('hidden');
+            return;
+          }
+          if (toolId === 'action-recent') {
+            document.getElementById('recentFilesModal')?.classList.remove('hidden');
+            return;
+          }
+          if (toolId === 'action-export') {
+            document.getElementById('advancedExportModal')?.classList.remove('hidden');
+            return;
+          }
+          if (toolId === 'action-slider') {
+            window.pixelEditor?.toggleViewMode('slider');
+            return;
+          }
+
+          const workspaceEl = document.getElementById('workspace');
+          if (workspaceEl) {
+            workspaceEl.scrollIntoView({ behavior: 'smooth' });
+            if (toolId && window.pixelEditor) {
+              window.pixelEditor.setTool(toolId);
+            }
+          } else {
+            window.location.href = `/#workspace`;
+          }
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCmdPalette);
+    } else {
+      initCmdPalette();
+    }
+  })();
+</script>

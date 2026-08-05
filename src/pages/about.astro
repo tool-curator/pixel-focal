@@ -1,0 +1,103 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
+---
+
+<Layout
+	title="About Us • Privacy-First Image Utilities | Pixel Focal"
+	description="Learn about Pixel Focal's mission to revolutionize web image editing with 100% client-side WebAssembly technology, privacy by design, and SaaS aesthetics."
+>
+	<JsonLd type="homepage" />
+	<Header />
+
+	<main class="py-16 theme-bg border-b theme-border">
+		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+			
+			<!-- Breadcrumb -->
+			<nav class="flex items-center gap-2 text-xs theme-muted" aria-label="Breadcrumb">
+				<a href="/" class="hover:text-blue-500 transition-colors">Home</a>
+				<span>/</span>
+				<span class="theme-heading font-medium">About Us</span>
+			</nav>
+
+			<!-- Header -->
+			<div class="space-y-4">
+				<span class="px-3.5 py-1 text-xs font-semibold tracking-wider text-blue-500 bg-blue-500/10 border border-blue-500/20 rounded-full uppercase">
+					OUR MISSION & VISION
+				</span>
+				<h1 class="text-3xl sm:text-5xl font-extrabold theme-heading tracking-tight">
+					Reimagining Image Utilities for the Modern Web
+				</h1>
+				<p class="text-base sm:text-lg theme-body leading-relaxed max-w-3xl">
+					Pixel Focal was built with a simple conviction: editing images on the web should be fast, beautiful, and 100% private—without uploading your data to remote cloud servers.
+				</p>
+			</div>
+
+			<!-- Visual Stats Grid -->
+			<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4">
+				<div class="p-5 rounded-2xl theme-card border theme-border text-center space-y-1">
+					<div class="text-2xl sm:text-3xl font-extrabold text-blue-500">100%</div>
+					<div class="text-xs theme-muted">Client-Side RAM</div>
+				</div>
+				<div class="p-5 rounded-2xl theme-card border theme-border text-center space-y-1">
+					<div class="text-2xl sm:text-3xl font-extrabold text-emerald-500">0 KB</div>
+					<div class="text-xs theme-muted">Server Uploads</div>
+				</div>
+				<div class="p-5 rounded-2xl theme-card border theme-border text-center space-y-1">
+					<div class="text-2xl sm:text-3xl font-extrabold theme-heading">15+</div>
+					<div class="text-xs theme-muted">Image Tools</div>
+				</div>
+				<div class="p-5 rounded-2xl theme-card border theme-border text-center space-y-1">
+					<div class="text-2xl sm:text-3xl font-extrabold text-amber-500">&lt;50ms</div>
+					<div class="text-xs theme-muted">Preview Latency</div>
+				</div>
+			</div>
+
+			<!-- Story & Values Body -->
+			<div class="space-y-8 text-sm theme-body leading-relaxed border-t theme-border pt-8">
+				
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">The Problem With Legacy Image Editors</h2>
+					<p>
+						For over a decade, webmasters, designers, and privacy-conscious users relied on legacy online image resizers and converters. However, almost all of these tools require uploading files to remote cloud servers, forcing users to accept serious security risks, strict file size quotas, subscription paywalls, and slow upload times.
+					</p>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">The Pixel Focal Solution</h2>
+					<p>
+						Pixel Focal combines modern web technologies—Astro, Tailwind CSS v4, TypeScript, HTML5 Canvas, and WebAssembly—to execute all image transformations locally inside your browser process.
+					</p>
+					<p>
+						Whether you are resizing photos, cropping focal points, converting formats (PNG, WebP, AVIF, JPEG), stripping sensitive EXIF metadata, or generating responsive code snippets, your images remain safely on your computer.
+					</p>
+				</section>
+
+				<section class="space-y-3">
+					<h2 class="text-xl font-bold theme-heading">Design Aesthetics Inspired by Modern SaaS</h2>
+					<p>
+						We believe web utilities shouldn't look like ad-cluttered relics from 2005. Inspired by the clean, minimalist design language of Vercel, Linear, Framer, and Raycast, Pixel Focal features generous whitespace, sleek dark/beige themes, subtle micro-interactions, and a professional monochrome design.
+					</p>
+				</section>
+
+				<!-- CTA Banner -->
+				<div class="p-8 rounded-2xl theme-card border border-blue-500/30 text-center space-y-4">
+					<h3 class="text-xl font-bold theme-heading">Ready to Experience Zero-Upload Image Editing?</h3>
+					<p class="text-xs theme-body max-w-md mx-auto">
+						No account registration, no file size limits up to 4MB per image, and complete data privacy.
+					</p>
+					<a href="/#workspace" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs active:scale-95 transition-all shadow-lg shadow-blue-600/20">
+						Launch Image Studio Workspace
+						<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+					</a>
+				</div>
+
+			</div>
+
+		</div>
+	</main>
+
+	<Footer />
+</Layout>

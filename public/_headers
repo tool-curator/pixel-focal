@@ -1,0 +1,2 @@
+# Headers configuration for Cloudflare Pages
+# Note: Hostname-specific headers like X-Robots-Tag: noindex for *.pages.dev are handled via functions/_middleware.js
